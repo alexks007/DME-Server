@@ -1,0 +1,28 @@
+{
+  "name": "STMainMiscData",
+  "base": "STUsefulItem",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "ModuleType": {
+      "type": "number",
+      "required": true,
+      "description": "type of the module . because of type effect value will influence on different aspects of the ship"
+    },
+    "EffectValue": {
+      "type": "number",
+      "required": true,
+      "description": "value to increase specific aspect of the ship , depends of module type"
+    },
+    "Module_Level": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

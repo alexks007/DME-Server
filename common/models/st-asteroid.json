@@ -1,0 +1,39 @@
+{
+  "name": "STAsteroid",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "token": {
+      "type": "string",
+      "required": true
+    },
+    "family_name": {
+      "type": "string"
+    },
+    "full_hp": {
+      "type": "number",
+      "required": true
+    },
+    "current_hp": {
+      "type": "number",
+      "required": true
+    },
+    "visual_type": {
+      "type": "number",
+      "required": true
+    },
+    "minerals": {
+      "type": [
+        "STPair"
+      ],
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

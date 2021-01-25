@@ -1,0 +1,64 @@
+{
+  "name": "Cockpit",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "strictObjectIDCoercion": true
+  },
+  "properties": {
+    "type": {
+      "type": "string",
+      "required": true,
+      "description": "avatar, avatar_ai, asteroid",
+      "default": "avatar"
+    },
+    "socketId": {
+      "type": "string",
+      "required": false,
+      "description": ""
+    },
+    "user_token": {
+      "type": "string",
+      "required": true,
+      "description": ""
+    },
+    "defencer_token": {
+      "type": "string",
+      "required": false,
+      "description": ""
+    },
+    "mapId": {
+      "type": "number",
+      "required": true,
+      "description": "",
+      "default": -1
+    },
+    "createdAt": {
+      "type": "date",
+      "required": true,
+      "description": "",
+      "default": "$now"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "accounts": {
+      "type": "hasOne",
+      "model": "Accounts",
+      "foreignKey": ""
+    },
+    "asteroid": {
+      "type": "hasOne",
+      "model": "Asteroid",
+      "foreignKey": ""
+    },
+    "robot": {
+      "type": "hasOne",
+      "model": "Robot",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

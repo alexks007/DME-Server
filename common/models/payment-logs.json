@@ -1,0 +1,127 @@
+{
+  "name": "PaymentLogs",
+  "description": "payment history",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "payment_no": {
+      "type": "number",
+      "required": true,
+      "description": "payment identifier"
+    },
+    "card_number": {
+      "type": "string",
+      "required": true,
+      "description": "card number",
+      "default": 0
+    },
+    "amount": {
+      "type": "number",
+      "required": true,
+      "description": "pay amount",
+      "default": 0
+    },
+    "type": {
+      "type": "string",
+      "required": true,
+      "description": "charge, pay, excharge",
+      "default": "pay"
+    },
+    "verify": {
+      "type": "number",
+      "required": true,
+      "description": "0: payment waiting, 1: approved, 2: canceled",
+      "default": 0
+    },
+    "payment_method": {
+      "type": "string",
+      "required": true,
+      "description": "payment method",
+      "default": "bank"
+    },
+    "releasedAt": {
+      "type": "date",
+      "description": "released date",
+      "default": "$now"
+    },
+    "createdAt": {
+      "type": "date",
+      "required": true,
+      "default": "$now"
+    },
+    "client_name": {
+      "type": "string",
+      "required": true,
+      "description": "client's name"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "store": {
+      "type": "belongsTo",
+      "model": "store",
+      "foreignKey": ""
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "manager",
+      "permission": "ALLOW",
+      "property": "managerChargeCash"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "manager",
+      "permission": "ALLOW",
+      "property": "getManagerChargeLogs"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "managerPaymentCash"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "manager",
+      "permission": "ALLOW",
+      "property": "getManagerPayLogs"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "getNewChargeLogs"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "verifyChargeLog"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "getChargeLogs"
+    }
+  ],
+  "methods": {}
+}

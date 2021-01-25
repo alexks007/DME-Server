@@ -1,0 +1,87 @@
+{
+  "name": "Asteroid",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "table_id": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "token": {
+      "type": "string",
+      "required": true,
+      "default": ""
+    },
+    "family_name": {
+      "type": "string",
+      "required": false,
+      "default": ""
+    },
+    "full_hp": {
+      "type": "number",
+      "required": true,
+      "default": 100
+    },
+    "current_hp": {
+      "type": "number",
+      "required": true,
+      "default": 100
+    },
+    "visual_type": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "minerals": {
+      "type": [
+        "STPair"
+      ],
+      "required": true
+    },
+    "path_points_id": {
+      "type": [
+        "number"
+      ],
+      "required": true
+    },
+    "jump_delay": {
+      "type": "number",
+      "required": true,
+      "default": 20
+    },
+    "respawn_delay": {
+      "type": "number",
+      "required": true,
+      "default": 20
+    },
+    "experience": {
+      "type": "number",
+      "required": true,
+      "default": 20
+    },
+    "money": {
+      "type": "number",
+      "required": true,
+      "default": 20
+    },
+    "createdAt": {
+      "type": "date",
+      "required": true,
+      "default": "$now"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "cockpit": {
+      "type": "belongsTo",
+      "model": "Cockpit",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

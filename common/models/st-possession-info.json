@@ -1,0 +1,30 @@
+{
+  "name": "STPossessionInfo",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "decks": {
+      "type": [
+        "number"
+      ],
+      "required": true,
+      "description": "default value = (1 element with value = -1); array of decks with index of ship inside",
+      "default": [
+        -1
+      ]
+    },
+    "inventory": {
+      "type": "STInvPlayers",
+      "required": true,
+      "description": "all that player have in game",
+      "default": []
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

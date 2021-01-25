@@ -1,0 +1,27 @@
+{
+  "name": "SearchLog",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "hidden": [
+    "accountsId"
+  ],
+  "properties": {
+    "proUserId": {
+      "type": "string",
+      "required": true,
+      "default": ""
+    },
+    "createdAt": {
+      "type": "date",
+      "required": true,
+      "default": "$now"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

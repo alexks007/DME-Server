@@ -1,0 +1,28 @@
+{
+  "name": "STUsefulItem",
+  "base": "STItemInfo",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "RepairPerHP": {
+      "type": "number",
+      "required": true
+    },
+    "LevelRequired": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "TotalHP": {
+      "type": "number",
+      "required": true,
+      "default": 100
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

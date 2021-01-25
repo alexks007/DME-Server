@@ -1,0 +1,41 @@
+{
+  "name": "STAvatar",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "type": {
+      "type": "string",
+      "required": true,
+      "description": "possible values: avatar/avatar_ai",
+      "default": "avatar"
+    },
+    "avatar_token": {
+      "type": "string",
+      "required": false,
+      "description": "if there is no guild, string is empty."
+    },
+    "avatar_name": {
+      "type": "string",
+      "required": true
+    },
+    "guild_name": {
+      "type": "string",
+      "required": true
+    },
+    "defencer_token": {
+      "type": "string",
+      "required": true
+    },
+    "avatar_ship": {
+      "type": "STShipStateInfo",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

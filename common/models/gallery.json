@@ -1,0 +1,58 @@
+{
+  "name": "Gallery",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "hidden": [
+    "clientId",
+    "accountsId"
+  ],
+  "properties": {
+    "file": {
+      "type": "string",
+      "required": true
+    },
+    "etag": {
+      "type": "string",
+      "required": true
+    },
+    "link": {
+      "type": "string",
+      "required": true
+    },
+    "thumb_file": {
+      "type": "string",
+      "required": false
+    },
+    "thumb_tag": {
+      "type": "string",
+      "required": false
+    },
+    "thumb_link": {
+      "type": "string",
+      "required": false
+    },
+    "createdAt": {
+      "type": "date",
+      "required": true,
+      "default": "$now"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "client": {
+      "type": "belongsTo",
+      "model": "Client",
+      "foreignKey": ""
+    },
+    "userPhotos": {
+      "type": "hasMany",
+      "model": "UserPhotos",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

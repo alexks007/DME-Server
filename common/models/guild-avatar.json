@@ -1,0 +1,65 @@
+{
+  "name": "GuildAvatar",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "idx": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "guild_name": {
+      "type": "string",
+      "required": true,
+      "default": "path_points_id"
+    },
+    "path_points_id": {
+      "type": [
+        "number"
+      ],
+      "required": true
+    },
+    "damage_multiplier": {
+      "type": "number",
+      "required": true,
+      "default": 1
+    },
+    "resistance_multiplier": {
+      "type": "number",
+      "required": true,
+      "default": 1
+    },
+    "asteroid_is_enemy": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "hunting_time": {
+      "type": "number",
+      "required": true,
+      "default": 30
+    },
+    "reputation": {
+      "type": "number",
+      "required": true,
+      "default": 50
+    }
+  },
+  "validations": [],
+  "relations": {
+    "robots": {
+      "type": "hasMany",
+      "model": "Robot",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

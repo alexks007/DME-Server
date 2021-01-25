@@ -1,0 +1,75 @@
+{
+  "name": "STMainShipData",
+  "base": "STUsefulItem",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "ShipSize": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "WingsSize": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "Speed": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "Evasion": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "CargoSpace": {
+      "type": "number",
+      "required": true,
+      "description": "max number of minerals that this ship can have without boost of specific miscs.",
+      "default": 0
+    },
+    "Shield": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "GunSlots": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "MissileSlots": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "MiscSlots": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "ShipModel": {
+      "type": "string",
+      "required": true,
+      "default": 0
+    },
+    "ShipClass": {
+      "type": "string",
+      "required": true,
+      "default": 0
+    },
+    "RadarRange": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

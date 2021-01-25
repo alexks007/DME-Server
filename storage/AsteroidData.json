@@ -1,0 +1,119 @@
+{
+  "asteroid_families": [
+    {
+      "id": 0,
+      "family_name": "first_asteroid",
+      "path_points_id": [
+        10566,
+        10564,
+        10694,
+        10696,
+        10698,
+        10569,
+        10308,
+        10436,
+        10304,
+        10562,
+        10823
+      ],
+      "minerals": [
+        {
+          "id": 107,
+          "count": {
+            "min": 7,
+            "max": 13
+          }
+        },
+        {
+          "id": 108,
+          "count": {
+            "min": 15,
+            "max": 29
+          }
+        }
+      ],
+      "jump_delay": {
+        "min": 25,
+        "max": 35
+      },
+      "respawn_delay": {
+        "min": 25,
+        "max": 45
+      },
+      "full_hp": {
+        "min": 90,
+        "max": 120
+      },
+      "experience": {
+        "min": 10,
+        "max": 25
+      },
+      "money": {
+        "min": 50,
+        "max": 150
+      },
+      "visual_type": 0,
+      "max_asteroids": 10,
+      "loot_boxes": [
+        {
+          "type": 0,
+          "chance": 0.01
+        }
+      ]
+    },
+    {
+      "id": 1,
+      "family_name": "second_asteroid",
+      "path_points_id": [
+        10566,
+        10564,
+        10694,
+        10696
+      ],
+      "minerals": [
+        {
+          "id": 107,
+          "count": {
+            "min": 7,
+            "max": 13
+          }
+        },
+        {
+          "id": 108,
+          "count": {
+            "min": 15,
+            "max": 29
+          }
+        }
+      ],
+      "jump_delay": {
+        "min": 25,
+        "max": 35
+      },
+      "respawn_delay": {
+        "min": 25,
+        "max": 45
+      },
+      "full_hp": {
+        "min": 90,
+        "max": 120
+      },
+      "experience": {
+        "min": 10,
+        "max": 25
+      },
+      "money": {
+        "min": 50,
+        "max": 150
+      },
+      "visual_type": 0,
+      "max_asteroids": 10,
+      "loot_boxes": [
+        {
+          "type": 0,
+          "chance": 0.01
+        }
+      ]
+    }
+  ]
+}

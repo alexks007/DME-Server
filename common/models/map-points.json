@@ -1,0 +1,88 @@
+{
+  "name": "MapPoints",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "mapId": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "key": {
+      "type": "string",
+      "required": true,
+      "default": "None"
+    },
+    "EconomicCondition": {
+      "type": "string",
+      "required": true,
+      "default": "None"
+    },
+    "StarMapIcon": {
+      "type": "string",
+      "required": true,
+      "default": "None"
+    },
+    "MainMenuBG": {
+      "type": "string",
+      "default": "None"
+    },
+    "Description": {
+      "type": "string"
+    },
+    "Material": {
+      "type": "string",
+      "default": "None"
+    },
+    "ID": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "XPos": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "YPos": {
+      "type": "string",
+      "required": true,
+      "default": 0
+    },
+    "Name": {
+      "type": "string",
+      "required": true,
+      "default": "None"
+    },
+    "Type": {
+      "type": "string",
+      "required": true,
+      "default": "point"
+    },
+    "Connections": {
+      "type": [
+        "number"
+      ],
+      "required": true,
+      "default": []
+    },
+    "Galaxy": {
+      "type": "number",
+      "required": true,
+      "default": 1
+    },
+    "minerals": {
+      "type": [
+        "STPair"
+      ],
+      "required": false
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

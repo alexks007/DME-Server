@@ -1,0 +1,79 @@
+{
+  "name": "STPlayerState",
+  "description": "Every player will have on server this structure of data",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "home_planet_id": {
+      "type": "number",
+      "required": true,
+      "default": 10566
+    },
+    "current_location_id": {
+      "type": "number",
+      "required": true,
+      "default": 10566
+    },
+    "experience": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "affiliations": {
+      "type": [
+        "STPair"
+      ],
+      "required": true,
+      "default": []
+    },
+    "reputation": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "money_dc": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "money_pdc": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "jump_ready_percentage": {
+      "type": "number",
+      "required": true,
+      "description": "default value =  0; value from 0 to 100. when this value = 100, it means that engine of the ship has full pawer and ready to jump to the next point. speed of increasing described here",
+      "default": 0
+    },
+    "poisiton_state": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "guild_id": {
+      "type": "number",
+      "required": true,
+      "default": -1
+    },
+    "level": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "ratio_shield_engine": {
+      "type": "number",
+      "required": true,
+      "description": "default value =  0;The value from 0 to 100. To control balance of speed of jump and shield power.if it is equit to 100 - shield has max pawer and jump speed is zero. if vaue is 100 - shield has zero pawer and jump speed is max. (how to calculate shield  - current ship shield + boost from miscs) (how to calculate jump speed is here.)",
+      "default": 0
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

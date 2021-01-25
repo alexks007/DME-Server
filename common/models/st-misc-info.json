@@ -1,0 +1,26 @@
+{
+  "name": "STMiscInfo",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "table_id": {
+      "type": "number",
+      "required": true
+    },
+    "uniq_id": {
+      "type": "string",
+      "required": true
+    },
+    "current_value": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

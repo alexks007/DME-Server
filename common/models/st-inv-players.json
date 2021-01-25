@@ -1,0 +1,88 @@
+{
+  "name": "STInvPlayers",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "guns": {
+      "type": [
+        "STGunState"
+      ],
+      "required": true,
+      "description": "default value = (no_elements);",
+      "default": []
+    },
+    "miscs": {
+      "type": [
+        "STMiscInfo"
+      ],
+      "required": true,
+      "description": "default value = (no_elements)",
+      "default": []
+    },
+    "ships": {
+      "type": [
+        "STShipStateInfo"
+      ],
+      "required": true,
+      "description": "default value = (no_elements)",
+      "default": []
+    },
+    "ship_skins": {
+      "type": [
+        "number"
+      ],
+      "required": true,
+      "description": "default value = (no_elements);not equiped ship skins",
+      "default": []
+    },
+    "gun_skins": {
+      "type": [
+        "number"
+      ],
+      "required": true,
+      "description": "default value = (no_elements); not equiped gun skins",
+      "default": []
+    },
+    "cockpit_skins": {
+      "type": [
+        "number"
+      ],
+      "required": true,
+      "description": "default value = (no_elements); not equiped cockpit skins",
+      "default": []
+    },
+    "map_skins": {
+      "type": [
+        "number"
+      ],
+      "required": true,
+      "description": "default value = (no_elements); not equiped map skins",
+      "default": []
+    },
+    "equiped_ship": {
+      "type": "string",
+      "required": true,
+      "description": "uniq_id of the ship (not index of array any more!!!)",
+      "default": ""
+    },
+    "equiped_map_skin": {
+      "type": "number",
+      "required": true,
+      "description": "default value = -1; -1 mean without skin; (default value -1)",
+      "default": -1
+    },
+    "equiped_cockpit_skin": {
+      "type": "number",
+      "required": true,
+      "description": "default value = -1; -1 mean without skin; (default value -1)",
+      "default": -1
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

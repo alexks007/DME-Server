@@ -1,0 +1,48 @@
+{
+  "name": "STItemInfo",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "table_id": {
+      "type": "number",
+      "required": true
+    },
+    "ItemName": {
+      "type": "string",
+      "required": true
+    },
+    "Icon": {
+      "type": "string",
+      "required": true
+    },
+    "Description": {
+      "type": "string",
+      "required": false
+    },
+    "CostPrice": {
+      "type": "number",
+      "required": true
+    },
+    "MoneyType": {
+      "type": "number",
+      "required": true,
+      "description": "0 - DC(DiasporaCoins); 1 - PDS(P_DiasporaCoins)"
+    },
+    "StaticMesh": {
+      "type": "string",
+      "required": false
+    },
+    "UploadDate": {
+      "type": "date",
+      "required": true,
+      "default": "$now"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

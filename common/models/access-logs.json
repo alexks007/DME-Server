@@ -1,0 +1,44 @@
+{
+  "name": "AccessLogs",
+  "description": "app screen access",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "strictObjectIDCoercion": true
+  },
+  "properties": {
+    "readAt": {
+      "type": "date",
+      "required": true,
+      "description": "",
+      "default": "$now"
+    },
+    "type": {
+      "type": "number",
+      "required": true,
+      "description": "0: notice, 1: event",
+      "default": 0
+    },
+    "documentId": {
+      "type": "string",
+      "required": true,
+      "description": "notice, event, question id"
+    },
+    "note": {
+      "type": "string",
+      "description": "note"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    }
+  ],
+  "methods": {}
+}

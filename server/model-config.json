@@ -1,0 +1,166 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins",
+      "../common/mixins",
+      "./mixins"
+    ]
+  },
+  "User": {
+    "dataSource": "disapora",
+    "public": false
+  },
+  "AccessToken": {
+    "dataSource": "disapora",
+    "public": false,
+    "relations": {
+      "Accounts": {
+        "type": "belongsTo",
+        "model": "Accounts",
+        "foreignKey": "userId"
+      }
+    }
+  },
+  "ACL": {
+    "dataSource": "disapora",
+    "public": false
+  },
+  "RoleMapping": {
+    "dataSource": "disapora",
+    "public": false,
+    "options": {
+      "strictObjectIDCoercion": true
+    }
+  },
+  "Role": {
+    "dataSource": "disapora",
+    "public": false
+  },
+  "Accounts": {
+    "dataSource": "disapora",
+    "public": true
+  },
+  "Reservation": {
+    "dataSource": "disapora",
+    "public": false
+  },
+  "UserLog": {
+    "dataSource": "disapora",
+    "public": false
+  },
+  "Notices": {
+    "dataSource": "disapora",
+    "public": false
+  },
+  "container": {
+    "dataSource": "storage_s3",
+    "public": false
+  },
+  "Question": {
+    "dataSource": "disapora",
+    "public": false
+  },
+  "Event": {
+    "dataSource": "disapora",
+    "public": false
+  },
+  "AccessLogs": {
+    "dataSource": "disapora",
+    "public": false
+  },
+  "GameConstants": {
+    "dataSource": "disapora",
+    "public": false
+  },
+  "SearchLog": {
+    "dataSource": "disapora",
+    "public": false
+  },
+  "Cockpit": {
+    "dataSource": "disapora",
+    "public": true
+  },
+  "MapPoints": {
+    "dataSource": "disapora",
+    "public": true
+  },
+  "STPlayerState": {
+    "dataSource": null,
+    "public": false
+  },
+  "STPossessionInfo": {
+    "dataSource": null,
+    "public": false
+  },
+  "STShipStateInfo": {
+    "dataSource": null,
+    "public": false
+  },
+  "STItemInfo": {
+    "dataSource": "disapora",
+    "public": false
+  },
+  "Cargo": {
+    "dataSource": null,
+    "public": true
+  },
+  "Asteroid": {
+    "dataSource": "disapora",
+    "public": true
+  },
+  "Robot": {
+    "dataSource": "disapora",
+    "public": true
+  },
+  "STPair": {
+    "dataSource": null,
+    "public": false
+  },
+  "STGunState": {
+    "dataSource": null,
+    "public": false
+  },
+  "STInvPlayers": {
+    "dataSource": null,
+    "public": false
+  },
+  "STMainShipData": {
+    "dataSource": "disapora",
+    "public": true
+  },
+  "STUsefulItem": {
+    "dataSource": null,
+    "public": false
+  },
+  "STMainMiscData": {
+    "dataSource": "disapora",
+    "public": true
+  },
+  "STMainGunData": {
+    "dataSource": "disapora",
+    "public": true
+  },
+  "STMiscInfo": {
+    "dataSource": null,
+    "public": false
+  },
+  "STAvatar": {
+    "dataSource": null,
+    "public": false
+  },
+  "STAsteroid": {
+    "dataSource": null,
+    "public": false
+  },
+  "GuildAvatar": {
+    "dataSource": "disapora",
+    "public": false
+  }
+}

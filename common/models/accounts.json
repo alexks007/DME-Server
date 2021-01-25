@@ -1,0 +1,470 @@
+{
+  "name": "Accounts",
+  "description": "User Managment",
+  "base": "User",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true,
+    "strictObjectIDCoercion": true
+  },
+  "hidden": [
+    "id",
+    "password",
+    "register_ip"
+  ],
+  "properties": {
+    "userId_old": {
+      "type": "string",
+      "required": false,
+      "description": "User ID (user id) from Old DB ID"
+    },
+    "userId": {
+      "type": "string",
+      "required": true,
+      "description": "User name"
+    },
+    "username": {
+      "type": "string",
+      "required": true,
+      "description": "User name"
+    },
+    "realname": {
+      "type": "string",
+      "required": true,
+      "description": "User Real Name"
+    },
+    "password": {
+      "type": "string",
+      "required": true
+    },
+    "store_name": {
+      "type": "string",
+      "required": true
+    },
+    "mac_address": {
+      "type": "string",
+      "required": true
+    },
+    "role": {
+      "type": "string",
+      "required": true,
+      "description": "client / profesional / admin",
+      "default": "client"
+    },
+    "status": {
+      "type": "number",
+      "required": false,
+      "description": "",
+      "default": 1
+    },
+    "verified": {
+      "type": "boolean",
+      "required": false,
+      "description": "true / false",
+      "default": false
+    },
+    "picture": {
+      "type": "string",
+      "required": false,
+      "description": "User picture",
+      "default": "user-picture/user_default.png"
+    },
+    "email": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "date",
+      "required": true,
+      "description": "",
+      "default": "$now"
+    },
+    "modifiedAt": {
+      "type": "date",
+      "description": "",
+      "default": "$now"
+    },
+    "register_ip": {
+      "type": "string",
+      "description": "when register, accessIP",
+      "default": ""
+    },
+    "register_type": {
+      "type": "string",
+      "description": "site / android / iphone",
+      "default": "iphone"
+    },
+    "player_state": {
+      "type": "STPlayerState",
+      "required": true,
+      "description": "Model STPlayerState"
+    },
+    "possessionInfo": {
+      "type": "STPossessionInfo",
+      "required": true,
+      "description": "Model PossessionInfo"
+    },
+    "type": {
+      "type": "string",
+      "required": false,
+      "description": "AI type(ai)"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "cockpit": {
+      "type": "belongsTo",
+      "model": "Cockpit",
+      "foreignKey": ""
+    },
+    "option": {
+      "type": "hasOne",
+      "model": "UserOptions",
+      "foreignKey": ""
+    },
+    "professional": {
+      "type": "hasOne",
+      "model": "Professional",
+      "foreignKey": ""
+    },
+    "client": {
+      "type": "hasOne",
+      "model": "Client",
+      "foreignKey": ""
+    },
+    "searchLogs": {
+      "type": "hasMany",
+      "model": "SearchLog",
+      "foreignKey": ""
+    },
+    "payments": {
+      "type": "hasMany",
+      "model": "Payments",
+      "foreignKey": ""
+    },
+    "user_log": {
+      "type": "hasMany",
+      "model": "UserLog",
+      "foreignKey": ""
+    },
+    "firebase_tokens": {
+      "type": "hasMany",
+      "model": "FirebaseToken",
+      "foreignKey": ""
+    },
+    "userPicture": {
+      "type": "hasOne",
+      "model": "Gallery",
+      "foreignKey": ""
+    }
+  },
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "checkEmail"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "checkPhoneNumber"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "registerClient"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "registerProfessional"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "registerAdmin"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "registerUser"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "loginUser"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "loginUserWithPhone"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "logOutUser"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "getUserInfo"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "updatePhoto"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "updateProfile"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "updateRole"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "admin",
+      "permission": "ALLOW",
+      "property": "findById"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "updateUserInfo"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "updateGameSetting"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "user",
+      "permission": "ALLOW",
+      "property": "getUserLogs"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "manager",
+      "permission": "ALLOW",
+      "property": "getUserLogs"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "askVerification"
+    },
+    {
+      "accessType": "EXECUTE",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "checkVerification"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "retrievePassword"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "updatePassword"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "getRegisterType"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "user",
+      "permission": "ALLOW",
+      "property": "getAppNotify"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "manager",
+      "permission": "ALLOW",
+      "property": "getAppNotify"
+    },
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "searchUser"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "updateAddress"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "client",
+      "permission": "ALLOW",
+      "property": "updateRealName"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "pro",
+      "permission": "ALLOW",
+      "property": "updateRealName"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "client",
+      "permission": "ALLOW",
+      "property": "updateRealName"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "pro",
+      "permission": "ALLOW",
+      "property": "updateRealName"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "client",
+      "permission": "ALLOW",
+      "property": "addAddress"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "pro",
+      "permission": "ALLOW",
+      "property": "addAddress"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "client",
+      "permission": "ALLOW",
+      "property": "updateAddress"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "pro",
+      "permission": "ALLOW",
+      "property": "updateAddress"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "client",
+      "permission": "ALLOW",
+      "property": "deleteAddress"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "pro",
+      "permission": "ALLOW",
+      "property": "deleteAddress"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "pro",
+      "permission": "ALLOW",
+      "property": "addAddPhoneNumber"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "client",
+      "permission": "ALLOW",
+      "property": "updatePhoneNumber"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "pro",
+      "permission": "ALLOW",
+      "property": "updatePhoneNumber"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "client",
+      "permission": "ALLOW",
+      "property": "addPayment"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "pro",
+      "permission": "ALLOW",
+      "property": "addPayment"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "getUserStatus"
+    }
+  ],
+  "methods": {}
+}

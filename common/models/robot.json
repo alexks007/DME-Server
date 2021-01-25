@@ -1,0 +1,102 @@
+{
+  "name": "Robot",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "jump_delay": {
+      "type": "number",
+      "required": true,
+      "default": 30
+    },
+    "respawn_delay": {
+      "type": "number",
+      "required": true,
+      "default": 30
+    },
+    "reputation_change": {
+      "type": "number",
+      "required": true,
+      "default": 1
+    },
+    "affiliation_change": {
+      "type": "number",
+      "required": true,
+      "default": 1
+    },
+    "money_multiplier": {
+      "type": "number",
+      "required": true,
+      "default": 1
+    },
+    "damage_multiplier": {
+      "type": "number",
+      "required": true,
+      "default": 1
+    },
+    "resistance_multiplier": {
+      "type": "number",
+      "required": true,
+      "default": 1
+    },
+    "experience": {
+      "type": "number",
+      "required": true,
+      "default": 1
+    },
+    "ai_name": {
+      "type": "string",
+      "required": true
+    },
+    "equiped_ship_id": {
+      "type": "number",
+      "required": true,
+      "default": 101
+    },
+    "equiped_skin_id": {
+      "type": "number",
+      "required": true,
+      "default": -1
+    },
+    "equiped_guns": {
+      "type": [
+        "number"
+      ],
+      "required": true
+    },
+    "equiped_miscs": {
+      "type": [
+        "number"
+      ],
+      "required": false
+    },
+    "loot_boxes": {
+      "type": [
+        "number"
+      ],
+      "required": false
+    },
+    "createdAt": {
+      "type": "date",
+      "required": true,
+      "default": "$now"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "cockpit": {
+      "type": "belongsTo",
+      "model": "Cockpit",
+      "foreignKey": ""
+    },
+    "guildAvatar": {
+      "type": "belongsTo",
+      "model": "GuildAvatar",
+      "foreignKey": ""
+    }
+  },
+  "acls": [],
+  "methods": {}
+}

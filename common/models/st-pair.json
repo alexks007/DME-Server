@@ -1,0 +1,22 @@
+{
+  "name": "STPair",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "table_id": {
+      "type": "number",
+      "required": true
+    },
+    "current_value": {
+      "type": "number",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

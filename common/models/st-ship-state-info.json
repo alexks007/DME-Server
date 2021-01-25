@@ -1,0 +1,57 @@
+{
+  "name": "STShipStateInfo",
+  "base": "Model",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "table_id": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "uniq_id": {
+      "type": "string",
+      "required": true,
+      "default": ""
+    },
+    "current_hp": {
+      "type": "number",
+      "required": true,
+      "default": 100
+    },
+    "equiped_skin": {
+      "type": "number",
+      "required": true,
+      "default": 0
+    },
+    "guns": {
+      "type": [
+        "STGunState"
+      ],
+      "required": true,
+      "default": []
+    },
+    "miscs": {
+      "type": [
+        "STMiscInfo"
+      ],
+      "required": true,
+      "description": "first value is misc id , second value is current hull",
+      "default": []
+    },
+    "minerals": {
+      "type": [
+        "STPair"
+      ],
+      "required": true,
+      "description": "first value is mineral id (type), second value is amount of minerals",
+      "default": []
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

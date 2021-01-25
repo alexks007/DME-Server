@@ -1,0 +1,36 @@
+{
+  "name": "STMainGunData",
+  "base": "STUsefulItem",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "FiringSound": {
+      "type": "string"
+    },
+    "Accuracy": {
+      "type": "number",
+      "required": true
+    },
+    "Speed": {
+      "type": "number",
+      "required": true
+    },
+    "Damage": {
+      "type": "number",
+      "required": true
+    },
+    "GunType": {
+      "type": "number",
+      "required": true
+    },
+    "GunBlueprint": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}

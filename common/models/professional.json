@@ -1,0 +1,81 @@
+{
+  "name": "Professional",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "hidden": [
+    "id",
+    "accountsId"
+  ],
+  "properties": {
+    "status": {
+      "type": "number",
+      "required": true,
+      "description": "0: waiting, 1: road, 2: working",
+      "default": 0
+    },
+    "description": {
+      "type": "string",
+      "required": false,
+      "default": ""
+    },
+    "score": {
+      "type": "number",
+      "required": true,
+      "description": "",
+      "default": 0
+    },
+    "createdAt": {
+      "type": "date",
+      "required": true,
+      "description": "",
+      "default": "$now"
+    },
+    "modifiedAt": {
+      "type": "date",
+      "required": true,
+      "description": "",
+      "default": "$now"
+    }
+  },
+  "validations": [],
+  "relations": {
+    "accounts": {
+      "type": "belongsTo",
+      "model": "Accounts",
+      "foreignKey": ""
+    },
+    "option": {
+      "type": "hasOne",
+      "model": "ProfessionalOption",
+      "foreignKey": ""
+    },
+    "sections": {
+      "type": "hasMany",
+      "model": "ServiceSection",
+      "foreignKey": ""
+    },
+    "jobs": {
+      "type": "hasMany",
+      "model": "Jobs",
+      "foreignKey": ""
+    },
+    "workdate": {
+      "type": "hasMany",
+      "model": "ProfessionalWorkDate",
+      "foreignKey": ""
+    }
+  },
+  "acls": [
+    {
+      "accessType": "READ",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "ALLOW",
+      "property": "getProfessionInfo"
+    }
+  ],
+  "methods": {}
+}

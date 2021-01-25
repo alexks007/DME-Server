@@ -1,0 +1,51 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "memory"
+  },
+  "disapora": {
+    "host": "localhost",
+    "port": 27017,
+    "url": "mongodb://localhost:27017",
+    "database": "admin",
+    "username": "",
+    "password": "",
+    "name": "disapora",
+    "connector": "mongodb"
+  },
+  "storage": {
+    "name": "storage",
+    "connector": "loopback-component-storage",
+    "provider": "filesystem",
+    "root": "./storage",
+    "maxFileSize": "5000000000",
+    "nameConflict": "makeUnique"
+  },
+  "storage_s3": {
+    "name": "storage_s3",
+    "connector": "loopback-component-storage",
+    "provider": "amazon",
+    "keyId": "AKIAILTIZ4L4FFC4F3ZQ",
+    "key": "cGLoGcF7Hm3HozElYqn+9wOb3p2pUlRL5iETLw1P",
+    "acl": "public-read"
+  },
+  "myEmailDataSource": {
+    "name": "myEmailDataSource",
+    "connector": "mail",
+    "transports": [
+      {
+        "type": "smtp",
+        "host": "smtp.private.com",
+        "secure": false,
+        "port": 587,
+        "tls": {
+          "rejectUnauthorized": false
+        },
+        "auth": {
+          "user": "me@private.com",
+          "pass": "password"
+        }
+      }
+    ]
+  }
+}

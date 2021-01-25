@@ -1,0 +1,103 @@
+{
+  "name": "ProfessionalOption",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "options": {
+    "validateUpsert": true
+  },
+  "properties": {
+    "wmark_name": {
+      "type": "boolean",
+      "required": true,
+      "description": "watermarks Your Name",
+      "default": true
+    },
+    "wmark_facebook": {
+      "type": "boolean",
+      "required": true,
+      "description": "watermarks Facebook",
+      "default": true
+    },
+    "wmark_pinterest": {
+      "type": "boolean",
+      "required": true,
+      "description": "watermarks Pinterest",
+      "default": true
+    },
+    "wmark_twitter": {
+      "type": "boolean",
+      "required": true,
+      "description": "watermarks Twitter",
+      "default": true
+    },
+    "wmark_instagram": {
+      "type": "boolean",
+      "required": true,
+      "description": "watermarks Instagram",
+      "default": true
+    },
+    "exfee_nonworkday": {
+      "type": "number",
+      "required": true,
+      "description": "extra fee: Non Working Day (%)",
+      "default": 10
+    },
+    "exfee_redservice": {
+      "type": "number",
+      "required": true,
+      "description": "extra fee: Red Service (%)",
+      "default": 10
+    },
+    "exfee_dislocation": {
+      "type": "number",
+      "required": true,
+      "description": "extra fee: Dislocation km ($)",
+      "default": 5
+    },
+    "exfee_cancelserv": {
+      "type": "number",
+      "required": true,
+      "description": "extra fee: Days to cancel a service km",
+      "default": 2
+    },
+    "exfee_refund": {
+      "type": "number",
+      "required": true,
+      "description": "extra fee: % of refund (%)",
+      "default": 10
+    },
+    "exfee_charge": {
+      "type": "number",
+      "required": true,
+      "description": "extra fee: KM to charge Fee (km)",
+      "default": 5
+    },
+    "paymode": {
+      "type": "number",
+      "required": true,
+      "description": "0: daily, 1: weekly, 2: 2weeks, 3: monthly",
+      "default": 1
+    },
+    "weekday": {
+      "type": "number",
+      "required": true,
+      "description": "day(0-6)",
+      "default": 0
+    },
+    "paydate": {
+      "type": "date",
+      "required": true,
+      "description": "",
+      "default": "$now"
+    },
+    "createdAt": {
+      "type": "date",
+      "required": true,
+      "default": "$now"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [],
+  "methods": {}
+}
