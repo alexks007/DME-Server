@@ -119,7 +119,7 @@ module.export = function(Hangar) {
 	Hangar.remoteMethod('buyPossesion', {
 		accepts: [
 			{arg: 'access_token', type: 'string', required: true},
-			{arg: 'table_objects', type: 'object', required: true},
+			{arg: 'table_objects', type: 'array', required: true},
 			{arg: 'decks', type: 'array', required: true}
 		],
 		description: [
