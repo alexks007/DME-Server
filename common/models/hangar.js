@@ -23,16 +23,12 @@ module.export = function(Hangar) {
 	const miscJson = require('../../storage/MiscStaticData.json');
 	const shipJson = require('../../storage/ShipsStaticData.json');
 	const shipskinJson = require('../../storage/ShipSkinsData.json');
-	const deck_array = [0,1000,1000,1500,2000,2500,3000];
+	const decksJson = require('../../storage/DeckData.json');
 
 	//BuyPossesion
 	Hangar.buyPossession = async(access_token, table_objects, decks) => {
 		const Accounts = Hangar.app.models.Accounts;
-		var deck_money = 0;
-		decks.forEach(deck_index => {
-			deck_money += deck_array[deck_index];
-		});
-		var ret_request = {
+		let ret_request = {
 			"table_objects": table_objects,
 			"decks": decks,
 			"request_name": "Buy Possession"
@@ -40,77 +36,119 @@ module.export = function(Hangar) {
 		try {
 			const userObj = await Accounts.getUserFromToken(access_token);
 			const moneyDC = userObj.player_state.money_dc;
-			if (table_objects.type == "gun") {
-				gunJson.forEach(guns => {
-					if (table_objects.table_id == guns.ID) {
-						if (moneyDC < guns.CostPrice + deck_money) {
-							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"No Money",ret_request));
-						} else {
-							//Update User Money
-							userObj.player_state.money_dc = moneyDC - guns.CostPrice - deck_money;
-							decks.forEach(deck_index => {
-								userObj.possessionInfo.decks[deck_index] = "";
-							});
-							//Update Possesion
-							userObj.possessionInfo.inventory.guns.push(guns);
-							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Gun Buy Success",ret_request));
+			const moneyPDC = userObj.player_state.money_pdc;
+			let total_price_dc = 0;
+			let total_price_pdc = 0;
+
+			//Get Total Purchase Price of Two Kinds of Money
+			//* Total sum of table objects *//
+			table_objects.forEach(table_object => {
+				if (table_object.type == "gun") {
+					gunJson.forEach(guns => {
+						if (table_object.table_id == guns.ID) {
+							if (guns.MoneyType == 0) {
+								total_price_dc += guns.CostPrice;
+							}
+							else {
+								total_price_pdc += guns.CostPrice;
+							}							
 						}
+					});
+				}
+				if (table_object.type == "ship") {
+					shipJson.forEach(ships => {
+						if (table_object.table_id == ships.ID) {
+							if (ships.MoneyType == 0) {
+								total_price_dc += ships.CostPrice;
+							}
+							else {
+								total_price_pdc += ships.CostPrice;
+							}
+						}
+					});
+				}
+				if (table_object.type == "misc") {
+					miscJson.forEach(miscs => {
+						if (table_object.table_id == miscs.ID) {
+							if (miscs.MoneyType == 0) {
+								total_price_dc += miscs.CostPrice;
+							}
+							else {
+								total_price_pdc += miscs.CostPrice;
+							}
+						}
+					});
+				}
+				if (table_object.type == "ship_skin") {
+					shipskinJson.forEach(shipskins => {
+						if (table_object.table_id == shipskins.ID) {
+							if (shipskins.MoneyType == 0) {
+								total_price_dc += shipskins.CostPrice;
+							}
+							else {
+								total_price_pdc += shipskins.CostPrice;
+							}
+						}
+					});
+				}	
+			});
+			//* Total sum of decks *//
+			decks.forEach(deck_index => {
+				decksJson.forEach(deck => {
+					if (deck[deck_index].MoneyType == 0) {
+						total_price_dc += deck[deck_index].CostPrice;
+					}
+					else {
+						total_price_pdc += deck[deck_index].CostPrice;
 					}
 				});
+				
+			});
+
+			//Compare Total Purchase Cost with Client Money
+			if (total_price_dc > moneyDC || total_price_pdc > moneyPDC) {
+				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Not Enough Money",ret_request));
 			}
-			if (table_objects.type == "ship") {
-				shipJson.forEach(ships => {
-					if (table_objects.table_id == ships.ID) {
-						if (moneyDC < ships.CostPrice + deck_money) {
-							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"No Money",ret_request));
-						} else {
-							//Update User Money
-							userObj.player_state.money_dc = moneyDC - ships.CostPrice - deck_money;
-							//Update Possesion
-							decks.forEach(deck_index => {
-								userObj.possessionInfo.decks[deck_index] = "";
-							});
-							userObj.possessionInfo.inventory.ships.push(ships);
-							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Ship Buy Success",ret_request));
-						}
+			else {
+				//Update Client Money State
+				userObj.player_state.money_dc = moneyDC - total_price_dc;
+				userObj.player_state.money_pdc = moneyPDC - total_price_pdc;
+				//Update Client Possession
+				table_objects.forEach(table_object => {
+					if (table_object.type == "gun") {
+						gunJson.forEach(guns => {
+							if (table_object.table_id == guns.ID) {
+								userObj.possessionInfo.inventory.guns.push(guns);
+							}
+						});
+					}
+					if (table_object.type == "ship") {
+						shipJson.forEach(ships => {
+							if (table_object.table_id == ships.ID) {
+								userObj.possessionInfo.inventory.ships.push(ships);
+							}
+						});
+					}
+					if (table_object.type == "misc") {
+						miscJson.forEach(miscs => {
+							if (table_object.table_id == miscs.ID) {
+								userObj.possessionInfo.inventory.miscs.push(miscs);
+							}
+						});
+					}
+					if (table_object.type == "ship_skin") {
+						shipskinJson.forEach(shipskins => {
+							if (table_object.table_id == shipskins.ID) {
+								userObj.possessionInfo.inventory.ship_skins.push(shipskins);
+							}
+						});
 					}
 				});
-			}
-			if (table_objects.type == "misc") {
-				miscJson.forEach(miscs => {
-					if (table_objects.table_id == miscs.ID) {
-						if (moneyDC < miscs.CostPrice + deck_money) {
-							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"No Money",ret_request));
-						} else {
-							//Update User Money
-							userObj.player_state.money_dc = moneyDC - miscs.CostPrice - deck_money;
-							//Update Possesion
-							decks.forEach(deck_index => {
-								userObj.possessionInfo.decks[deck_index] = "";
-							});
-							userObj.possessionInfo.inventory.miscs.push(miscs);
-							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Misc Buy Success",ret_request));
-						}
-					}
+				//Update Decks
+				decks.forEach(deck_index => {
+					userObj.possessionInfo.decks.push(deck_index);
 				});
-			}
-			if (table_objects.type == "ship_skin") {
-				shipskinJson.forEach(shipskins => {
-					if (table_objects.table_id == shipskins.ID) {
-						if (moneyDC < shipskins.CostPrice + deck_money) {
-							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"No Money",ret_request));
-						} else {
-							//Update User Money
-							userObj.player_state.money_dc = moneyDC - shipskins.CostPrice - deck_money;
-							//Update Possesion
-							decks.forEach(deck_index => {
-								userObj.possessionInfo.decks[deck_index] = "";
-							});
-							userObj.possessionInfo.inventory.ship_skins.push(shipskins);
-							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Ship Skin Buy Success",ret_request));
-						}
-					}
-				});
+				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Buy Possession Success",ret_request));
 			}
 		} catch(e) {
 			return Promise.reject(e);
@@ -152,138 +190,144 @@ module.export = function(Hangar) {
 		};
 		try {
 			const userObj = await Accounts.getUserFromToken(access_token);
-			if(uniq_objects.type == "ship") {
-				userObj.possessionInfo.inventory.ships.forEach(shipobject => {
-					if(shipobject.uniq_id == uniq_objects.table_id) {
-						shipobject.guns.forEach(shipobjectgun => {
-							userObj.possessionInfo.inventory.guns.push(shipobjectgun);
-						});
-						shipobject.miscs.forEach(shipobjectmisc => {
-							userObj.possessionInfo.inventory.miscs.push(shipobjectmisc);
-						});
-						if(shipobject.equiped_skin != -1)
-							userObj.possessionInfo.inventory.ship_skins.push(shipobject.equiped_skin);
-						shipJson.forEach(shipselectobject => {
-							if(shipselectobject.ID == shipobject.table_id) {
-								userObj.player_state.money_dc += shipselectobject.CostPrice + deck_money;
-								userObj.possessionInfo.inventory.ships.pop(shipobject);
-								decks.forEach(deck_index => {
-									delete userObj.possessionInfo.decks[deck_index];
-								});
-								return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Ship sell Success",ret_request));
-							}
-						});
-					}
-				});
-			} 
-			else if(uniq_objects.type == "gun") {
-				let isequip = 0;
-				userObj.possessionInfo.inventory.guns.forEach(gunobject => {
-					if(gunobject.uniq_id == uniq_objects.table_id) {
-						isequip = 1;
-						gunJson.forEach(gunjsonobject => {
-							if(gunjsonobject.ID == gunobject.table_id) {
-								userObj.player_state.money_dc += gunjsonobject.CostPrice + deck_money;
-								userObj.possessionInfo.inventory.guns.pop(gunobject);
-								decks.forEach(deck_index => {
-									delete userObj.possessionInfo.decks[deck_index];
-								});
-								return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Gun sell Success",ret_request));
-							}
-						});
-					}
-				});
-				if(isequip == 0) {
-					userObj.possessionInfo.inventory.ships.forEach(guneveryoject => {
-						guneveryoject.guns.forEach(gunobject => {
-							if(gunobject.uniq_id == uniq_objects.table_id) {
-								gunJson.forEach(gunjsonobject => {
-									if(gunjsonobject.ID == gunobject.table_id) {
-										if(gunobject.equiped_skin != -1) userObj.possessionInfo.inventory.gun_skins.push(gunobject.equiped_skin);
-										userObj.player_state.money_dc += gunjsonobject.CostPrice + deck_money;
-										guneveryoject.guns.pop(gunobject);
-										decks.forEach(deck_index => {
-											delete userObj.possessionInfo.decks[deck_index];
-										});
-										return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Gun sell Success",ret_request));
-									}
-								});
-							}
-						});
-					});
-				}
-			}
-			else if(uniq_objects.type == "misc") {
-				let isequip = 0;
-				userObj.possessionInfo.inventory.miscs.forEach(miscobject => {
-					if(miscobject.uniq_id == uniq_objects.table_id) {
-						isequip = 1;
-						miscJson.forEach(miscjsonobject => {
-							if(miscjsonobject.ID == miscobject.table_id) {
-								userObj.player_state.money_dc += miscjsonobject.CostPrice + deck_money;
-								userObj.possessionInfo.inventory.miscs.pop(miscobject);
-								decks.forEach(deck_index => {
-									delete userObj.possessionInfo.decks[deck_index];
-								});
-								return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Misc sell Success",ret_request));
-							}
-						});
-					}
-				});
-				if(isequip == 0) {
-					userObj.possessionInfo.inventory.ships.forEach(guneveryoject => {
-						guneveryoject.miscs.forEach(miscobject => {
-							if(miscobject.uniq_id == uniq_objects.table_id) {
-								miscJson.forEach(miscjsonobject => {
-									if(miscjsonobject.ID == miscobject.table_id) {
-										userObj.player_state.money_dc += miscjsonobject.CostPrice + deck_money;
-										guneveryoject.miscs.pop(miscobject);
-										decks.forEach(deck_index => {
-											delete userObj.possessionInfo.decks[deck_index];
-										});
-										return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Misc sell Success",ret_request));
-									}
-								});
-							}
-						});
-					});
-				}
-			}
-//			else return "error";
-			if(uniq_skins.type == "ship_skin") {
-				let isequip = 0;
-				userObj.possessionInfo.inventory.ship_skins.forEach(shipskinobject => {
-					if(shipskinobject == uniq_skins.object_uniq_id) {
-						isequip = 1;
-						shipskinJson.forEach(shipskineveryobject => {
-							if(shipskineveryobject.ID == uniq_skins.table_id) {
-								userObj.player_state.money_dc += shipskineveryobject.CostPrice + deck_money;
-								userObj.possessionInfo.inventory.ship_skins.pop(shipskinobject);
-								decks.forEach(deck_index => {
-									delete userObj.possessionInfo.decks[deck_index];
-								});
-								return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Ship Skin sell Success",ret_request));
-							}
-						});
-					}
-				});
-				if(isequip == 1) {
-					userObj.possessionInfo.inventory.ships.forEach(shipskineachobject => {
-						if(shipskineachobject.equiped_skin == uniq_skins.object_uniq_id) {
-							shipskinJson.forEach(shipskineveryobject => {
-								if(shipskineveryobject.ID == uniq_skins.table_id) {
-									userObj.player_state.money_dc += shipskineveryobject.CostPrice + deck_money;
-									shipskineachobject = -1;
+			uniq_objects.forEach(uniq_object => {
+				if(uniq_object.type == "ship") {
+					userObj.possessionInfo.inventory.ships.forEach(shipobject => {
+						if(shipobject.uniq_id == uniq_object.table_id) {
+							shipobject.guns.forEach(shipobjectgun => {
+								userObj.possessionInfo.inventory.guns.push(shipobjectgun);
+							});
+							shipobject.miscs.forEach(shipobjectmisc => {
+								userObj.possessionInfo.inventory.miscs.push(shipobjectmisc);
+							});
+							if(shipobject.equiped_skin != -1)
+								userObj.possessionInfo.inventory.ship_skins.push(shipobject.equiped_skin);
+							shipJson.forEach(shipselectobject => {
+								if(shipselectobject.ID == shipobject.table_id) {
+									userObj.player_state.money_dc += shipselectobject.CostPrice + deck_money;
+									userObj.possessionInfo.inventory.ships.pop(shipobject);
 									decks.forEach(deck_index => {
 										delete userObj.possessionInfo.decks[deck_index];
 									});
+									return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Ship sell Success",ret_request));
+								}
+							});
+						}
+					});
+				} 
+				else if(uniq_object.type == "gun") {
+					let isequip = 0;
+					userObj.possessionInfo.inventory.guns.forEach(gunobject => {
+						if(gunobject.uniq_id == uniq_object.table_id) {
+							isequip = 1;
+							gunJson.forEach(gunjsonobject => {
+								if(gunjsonobject.ID == gunobject.table_id) {
+									userObj.player_state.money_dc += gunjsonobject.CostPrice + deck_money;
+									userObj.possessionInfo.inventory.guns.pop(gunobject);
+									decks.forEach(deck_index => {
+										delete userObj.possessionInfo.decks[deck_index];
+									});
+									return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Gun sell Success",ret_request));
+								}
+							});
+						}
+					});
+					if(isequip == 0) {
+						userObj.possessionInfo.inventory.ships.forEach(guneveryoject => {
+							guneveryoject.guns.forEach(gunobject => {
+								if(gunobject.uniq_id == uniq_object.table_id) {
+									gunJson.forEach(gunjsonobject => {
+										if(gunjsonobject.ID == gunobject.table_id) {
+											if(gunobject.equiped_skin != -1) userObj.possessionInfo.inventory.gun_skins.push(gunobject.equiped_skin);
+											userObj.player_state.money_dc += gunjsonobject.CostPrice + deck_money;
+											guneveryoject.guns.pop(gunobject);
+											decks.forEach(deck_index => {
+												delete userObj.possessionInfo.decks[deck_index];
+											});
+											return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Gun sell Success",ret_request));
+										}
+									});
+								}
+							});
+						});
+					}
+				}
+				else if(uniq_object.type == "misc") {
+					let isequip = 0;
+					userObj.possessionInfo.inventory.miscs.forEach(miscobject => {
+						if(miscobject.uniq_id == uniq_object.table_id) {
+							isequip = 1;
+							miscJson.forEach(miscjsonobject => {
+								if(miscjsonobject.ID == miscobject.table_id) {
+									userObj.player_state.money_dc += miscjsonobject.CostPrice + deck_money;
+									userObj.possessionInfo.inventory.miscs.pop(miscobject);
+									decks.forEach(deck_index => {
+										delete userObj.possessionInfo.decks[deck_index];
+									});
+									return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Misc sell Success",ret_request));
+								}
+							});
+						}
+					});
+					if(isequip == 0) {
+						userObj.possessionInfo.inventory.ships.forEach(guneveryoject => {
+							guneveryoject.miscs.forEach(miscobject => {
+								if(miscobject.uniq_id == uniq_object.table_id) {
+									miscJson.forEach(miscjsonobject => {
+										if(miscjsonobject.ID == miscobject.table_id) {
+											userObj.player_state.money_dc += miscjsonobject.CostPrice + deck_money;
+											guneveryoject.miscs.pop(miscobject);
+											decks.forEach(deck_index => {
+												delete userObj.possessionInfo.decks[deck_index];
+											});
+											return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Misc sell Success",ret_request));
+										}
+									});
+								}
+							});
+						});
+					}
+				}
+			});
+			
+//			else return "error";
+			uniq_skins.forEach(uniq_skin_object => {
+				if(uniq_skin_object.type == "ship") {
+					let isequip = 0;
+					userObj.possessionInfo.inventory.ship_skins.forEach(shipskinobject => {
+						if(shipskinobject == uniq_skin_object.object_uniq_id) {
+							isequip = 1;
+							shipskinJson.forEach(ship_skin_object => {
+								if(ship_skin_object.ID == uniq_skin_object.table_id) {
+									userObj.player_state.money_dc += ship_skin_object.CostPrice;
+									userObj.possessionInfo.inventory.ship_skins.pop(shipskinobject);
+									// decks.forEach(deck_index => {
+									// 	delete userObj.possessionInfo.decks[deck_index];
+									// });
 									return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Ship Skin sell Success",ret_request));
 								}
 							});
 						}
 					});
+					if(isequip == 1) {
+						userObj.possessionInfo.inventory.ships.forEach(shipskineachobject => {
+							if(shipskineachobject.equiped_skin == uniq_skin_object.object_uniq_id) {
+								shipskinJson.forEach(shipskineveryobject => {
+									if(shipskineveryobject.ID == uniq_skin_object.table_id) {
+										userObj.player_state.money_dc += shipskineveryobject.CostPrice;
+										shipskineachobject = -1;
+										decks.forEach(deck_index => {
+											delete userObj.possessionInfo.decks[deck_index];
+										});
+										return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Ship Skin sell Success",ret_request));
+									}
+								});
+							}
+						});
+					}
 				}
-			}
+			});
+			
 		} catch (error) {
 			return Promise.reject(error);			
 		}
