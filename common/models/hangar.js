@@ -95,12 +95,14 @@ module.export = function(Hangar) {
 			//* Total sum of decks *//
 			decks.forEach(deck_index => {
 				decksJson.forEach(deck => {
-					if (deck[deck_index].MoneyType == 0) {
-						total_price_dc += deck[deck_index].CostPrice;
-					}
-					else {
-						total_price_pdc += deck[deck_index].CostPrice;
-					}
+					if (deck.DeckIndex == deck_index) {
+						if (deck.MoneyType == 0) {
+							total_price_dc += deck[deck_index].CostPrice;
+						}
+						else {
+							total_price_pdc += deck[deck_index].CostPrice;
+						}
+					}					
 				});
 				
 			});
@@ -512,7 +514,7 @@ module.export = function(Hangar) {
 					userObj.possessionInfo.decks.forEach(deck_object => {
 						if (deck_object.deck_index == deck_index) {
 							decksJson.forEach(deck => {
-								if (deck.deck_index == deck_index) {
+								if (deck.DeckIndex == deck_index) {
 									userObj.player_state.money_dc += deck.CostPrice;
 									delete userObj.possessionInfo.decks[i];
 								}
@@ -521,9 +523,10 @@ module.export = function(Hangar) {
 						i++;
 					});
 				});
+				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Sell Possession Success",ret_request));
 			}
 			else {
-				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"No object",ret_request));
+				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"No object",ret_request));
 			}
 		} catch (error) {
 			return Promise.reject(error);			
@@ -560,111 +563,131 @@ module.export = function(Hangar) {
 		};
 		try {
 			const userObj = await Accounts.getUserFromToken(access_token);
-			if(repair_data.uniq_object.type == "ship") {
-				userObj.possessionInfo.inventory.ships.forEach(shipobject => {
-					if(shipobject.uniq_id == repair_data.uniq_object.uniq_id) {
-						if(shipobject.current_hp + repair_data.repair_value > 100) 
-							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Ship Repair Fault",ret_request));
-						else
-							shipJson.forEach(shipjsonobject => {
-								if(shipjsonobject.ID == shipobject.table_id) {
-									if(userObj.player_state.money_dc < shipjsonobject.RepairPerHP * repair_data.repair_value)
-										return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Ship Repair Fault",ret_request));
-									else {
-										userObj.player_state.money_dc -= parseInt(shipjsonobject.RepairPerHP * repair_data.repair_value,10);
-										shipobject.current_hp += repair_data.repair_value;
-										return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Ship Repair Success",ret_request));
-									}
+			const moneyDC = userObj.player_state.money_dc;
+			let costPrice = 0;
+			repair_data.forEach(repair_data_object => {
+				if (repair_data_object.uniq_object.type == "ship") {
+					let have_ship = false;
+					userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+						if (ship_object.uniq_id == repair_data_object.uniq_object.uniq_id) {
+							shipJson.forEach(ship_item => {
+								if (ship_item.ID == ship_object.uniq_id) {
+									costPrice += Math.round(ship_item.RepairPerHP * repair_data_object.repair_value);
 								}
 							});
-					}
-				});
-			}
-			if(repair_data.uniq_object.type == "gun") {
-				let isequip = 0;
-				userObj.possessionInfo.inventory.guns.forEach(gunobject => {
-					if(gunobject.uniq_id == repair_data.uniq_object.uniq_id) {
-						isequip = 1;
-						if(gunobject.current_hp + repair_data.repair_value > 100) 
-							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Gun Repair Fault",ret_request));
-						else gunJson.forEach(gunjsonobject => {
-							if(gunjsonobject.ID == gunobject.table_id) {
-								if(userObj.player_state.money_dc < gunjsonobject.RepairPerHP * repair_data.repair_value)
-									return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Gun Repair Fault",ret_request));
-								else {
-									userObj.player_state.money_dc -= parseInt(gunjsonobject.RepairPerHP * repair_data.repair_value,10);
-									gunobject.current_hp += repair_data.repair_value;
-									return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Gun Repair Success",ret_request));
+							have_ship = true;
+						}
+					});
+				}
+				else if (repair_data_object.uniq_object.type == "gun") {
+					let have_gun = false;
+					userObj.possessionInfo.inventory.guns.forEach(gun_object => {
+						if (gun_object.uniq_id == repair_data_object.uniq_object.uniq_id) {
+							gunJson.forEach(gun_item => {
+								if (gun_item.ID == gun_object.uniq_id) {
+									costPrice += Math.round(gun_item.RepairPerHP * repair_data_object.repair_value);
 								}
-							}
-						});
-					}
-				});
-				if(isequip == 0) {
-					userObj.possessionInfo.inventory.ships.forEach(gunevery => {
-						gunevery.guns.forEach(gunobject => {
-							if(gunobject.uniq_id == repair_data.uniq_object.uniq_id) {
-								if(gunobject.current_hp + repair_data.repair_value > 100) 
-									return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Gun Repair Fault",ret_request));
-								else gunJson.forEach(gunjsonobject => {
-									if(gunjsonobject.ID == gunobject.table_id) {
-										if(userObj.player_state.money_dc < gunjsonobject.RepairPerHP * repair_data.repair_value)
-											return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Gun Repair Fault",ret_request));
-										else {
-											userObj.player_state.money_dc -= parseInt(gunjsonobject.RepairPerHP * repair_data.repair_value,10);
-											gunobject.current_hp += repair_data.repair_value;
-											return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Gun Repair Success",ret_request));
-										}
+							});
+							have_gun = true;
+						}
+					});
+					userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+						ship_object.guns.forEach(equip_gun => {
+							if (equip_gun.uniq_id == repair_data_object.uniq_object.uniq_id) {
+								gunJson.forEach(gun_item => {
+									if (gun_item.ID == equip_gun.uniq_id) {
+										costPrice += Math.round(gun_item.RepairPerHP * repair_data_object.repair_value);
 									}
 								});
+								have_gun = true;
 							}
 						});
 					});
 				}
-			}
-			if(repair_data.uniq_object.type == "misc") {
-				let isequip = 0;
-				userObj.possessionInfo.inventory.miscs.forEach(miscsobject => {
-					if(miscsobject.uniq_id == repair_data.uniq_object.uniq_id) {
-						isequip = 1;
-						if(miscsobject.current_hp + repair_data.repair_value > 100) 
-							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Misc Repair Fault",ret_request));
-						else miscJson.forEach(miscjsonobject => {
-							if(miscjsonobject.ID == miscsobject.table_id) {
-								if(userObj.player_state.money_dc < miscjsonobject.RepairPerHP * repair_data.repair_value)
-									return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Misc Repair Fault",ret_request));
-								else {
-									userObj.player_state.money_dc -= parseInt(miscjsonobject.RepairPerHP * repair_data.repair_value,10);
-									miscsobject.current_hp += repair_data.repair_value;
-									return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Misc Repair Success",ret_request));
+				else if (repair_data_object.uniq_object.type == "misc") {
+					let have_misc = false;
+					userObj.possessionInfo.inventory.miscs.forEach(misc_object => {
+						if (misc_object.uniq_id == repair_data_object.uniq_object.uniq_id) {
+							miscJson.forEach(misc_item => {
+								if (misc_item.uniq_id == repair_data_object.uniq_object.uniq_id) {
+									costPrice += Math.round(misc_item.RepairPerHP * repair_data_object.repair_value);
 								}
-							}
-						});
-					}
-				});
-				if(isequip == 0) {
-					userObj.possessionInfo.inventory.ships.forEach(miscevery => {
-						miscevery.miscs.forEach(miscobject => {
-							if(miscobject.uniq_id == repair_data.uniq_object.uniq_id) {
-								if(miscobject.current_hp + repair_data.repair_value > 100)
-									return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Misc Repair Fault",ret_request));
-								else miscJson.forEach(miscjsonobject => {
-									if(miscjsonobject.ID == miscobject.table_id) {
-										if(userObj.player_state.money_dc < miscjsonobject.RepairPerHP * repair_data.repair_value) 
-											return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Misc Repair Fault",ret_request));
-										else {
-											userObj.player_state.money_dc -= parseInt(miscjsonobject.RepairPerHP * repair_data.repair_value,10);
-											miscobject.current_hp += repair_data.repair_value;
-											return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Misc Repair Success",ret_request));
-										}
+							});
+							have_misc = true;
+						}
+					});
+					userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+						ship_object.miscs.forEach(equip_misc => {
+							if (equip_misc.uniq_id == repair_data_object.uniq_object.uniq_id) {
+								miscJson.forEach(misc_item => {
+									if (misc_item.uniq_id == repair_data_object.uniq_object.uniq_id) {
+										costPrice += Math.round(misc_item.RepairPerHP * repair_data_object.repair_value);
 									}
 								});
+								have_misc = true;
 							}
 						});
 					});
 				}
-			}
 
+			});
+			let have_all_item = false;
+			if (have_gun == true && have_misc == true && have_ship == true)
+				have_all_item = true;
+			if (have_all_item == true && moneyDC >= costPrice) {
+				repair_data.forEach(repair_data_object => {
+					if (repair_data_object.uniq_object.type == "ship") {
+						let i = 0;
+						userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+							if (ship_object.uniq_id == repair_data_object.uniq_object.uniq_id) {
+								userObj.possessionInfo.inventory.ships[i].current_hp += repair_data_object.repair_value;
+							}
+							i++;
+						});
+					}
+					else if (repair_data_object.uniq_object.type == "gun") {
+						let i,j,k = 0;
+						userObj.possessionInfo.inventory.guns.forEach(gun_object => {
+							if (gun_object.uniq_id == repair_data_object.uniq_object.uniq_id) {
+								userObj.possessionInfo.inventory.guns[i].current_hp += repair_data_object.repair_value;
+							}
+							i++;
+						});
+						userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+							ship_object.guns.forEach(equip_gun => {
+								if (equip_gun.uniq_id == repair_data_object.uniq_object.uniq_id) {
+									userObj.possessionInfo.inventory.ships[j].guns[k].current_hp += repair_data_object.repair_value;
+								}
+								k++;
+							});
+							j++;
+						});
+					}
+					else if (repair_data_object.uniq_object.type == "misc") {
+						let i,j,k = 0;
+						userObj.possessionInfo.inventory.miscs.forEach(misc_object => {
+							if (misc_object.uniq_id == repair_data_object.uniq_object.uniq_id) {
+								userObj.possessionInfo.inventory.misc[i].current_hp += repair_data_object.repair_value;
+							}
+							i++;
+						});
+						userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+							ship_object.miscs.forEach(equip_misc => {
+								if (equip_misc.uniq_id == repair_data_object.uniq_object.uniq_id) {
+									userObj.possessionInfo.inventory.ships[j].miscs[k].current_hp += repair_data_object.repair_value;
+								}
+								k++;
+							});
+							j++;
+						});
+					}	
+				});
+				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Repair Success",ret_request));
+			}
+			else {
+				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Repair failed",ret_request));
+			}
+			
 		} catch (e) {
 			return Promise.reject(e);			
 		}
@@ -700,14 +723,20 @@ module.export = function(Hangar) {
 		const Accounts = Hangar.app.models.Accounts;
 		try {
 			const userObj = await Accounts.getUserFromToken(access_token);
-			if(userObj.player_state.position_state == 0) {
-				userObj.possessionInfo.inventory.equiped_ship = uniq_id;
-				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Success",ret_request));
-			}
 			if(is_reverse) {
 				userObj.possessionInfo.inventory.equiped_ship = "";
-				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Success",ret_request));
+				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Unequip Ship Success",ret_request));
 			}
+			else {
+				userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+					if (ship_object.uniq_id == uniq_id) {
+						if(userObj.player_state.position_state == 0) {
+							userObj.possessionInfo.inventory.equiped_ship = uniq_id;
+							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Equip Ship Success",ret_request));
+						}
+					}
+				});			
+			}		
 		} catch (e) {
 			return Promise.reject(e);			
 		}
@@ -748,9 +777,39 @@ module.export = function(Hangar) {
 			const userObj = await Accounts.getUserFromToken(access_token);
 			let current_ship;
 			if(!is_reverse) {
-				userObj.possessionInfo.inventory.ships.forEach(shipobject => {
-					if(shipobject.uniq_id == ship_uniq_id) current_ship = shipobject;
+				let have_gun,have_misc = false;
+				//Check client have all object
+				guns_uniq_id.forEach(gun_uniq_id => {
+					have_gun = false;
+					userObj.possessionInfo.inventory.guns.forEach(gun_object => {
+						if (gun_object.uniq_id == gun_uniq_id) {
+							have_gun = true;
+						}
+					});
+					userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+						ship_object.guns.forEach(gun_object => {
+							if (gun_object.uniq_id == gun_uniq_id) {
+								have_gun =true;
+							}
+						});
+					});
 				});
+				
+				userObj.possessionInfo.inventory.miscs.forEach(misc_object => {
+					if (misc_object.uniq_id == miscs_uniq_id) {
+						have_misc = true;
+					}
+				});
+				userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+					ship_object.miscs.forEach(misc_object => {
+						if (misc_object.uniq_id == miscs_uniq_id) {
+							have_misc = true;
+							equiped_misc = true;
+						}
+					});
+				});
+
+				//Equip Object
 				miscs_uniq_id.forEach(miscfindobject => {
 					userObj.possessionInfo.inventory.miscs.forEach(miscobject => {
 						if(miscobject.uniq_id == miscfindobject) {
@@ -783,7 +842,7 @@ module.export = function(Hangar) {
 						});
 					});
 				});
-				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Success",ret_request));
+				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Equip Success",ret_request));
 			} else {
 				current_ship.guns.forEach(gunobject => {
 					current_ship.guns.pop(gunobject);
