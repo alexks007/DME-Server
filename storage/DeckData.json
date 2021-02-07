@@ -1,0 +1,44 @@
+[
+    {
+        "DeckIndex" : 0,
+        "MoneyType" : 0,
+        "CostPrice" : 0
+
+    },
+    {
+        "DeckIndex" : 1,
+        "MoneyType" : 0,
+        "CostPrice" : 1000
+
+    },
+    {
+        "DeckIndex" : 2,
+        "MoneyType" : 0,
+        "CostPrice" : 1000
+
+    },
+    {
+        "DeckIndex" : 3,
+        "MoneyType" : 0,
+        "CostPrice" : 1500
+
+    },
+    {
+        "DeckIndex" : 4,
+        "MoneyType" : 0,
+        "CostPrice" : 2000
+
+    },
+    {
+        "DeckIndex" : 5,
+        "MoneyType" : 0,
+        "CostPrice" : 2500
+
+    },
+    {
+        "DeckIndex" : 6,
+        "MoneyType" : 0,
+        "CostPrice" : 3000
+
+    }
+]
