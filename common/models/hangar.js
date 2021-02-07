@@ -108,7 +108,7 @@ module.export = function(Hangar) {
 			});
 			//Compare Total Purchase Cost with Client Money
 			if (total_price_dc > moneyDC || total_price_pdc > moneyPDC) {
-				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Not Enough Money",ret_request));
+				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,0,"Not Enough Money",ret_request));
 			}
 			else {
 				//Update Client Money State
@@ -149,10 +149,10 @@ module.export = function(Hangar) {
 				decks.forEach(deck_index => {
 					userObj.possessionInfo.decks.push(deck_index);
 				});
-				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Buy Possession Success",ret_request));
+				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Buy Possession Success",ret_request));
 			}
 		} catch(e) {
-			return Promise.reject(e);
+			Promise.reject(e);
 		}
 	}
 	Hangar.remoteMethod('buyPossesion', {
@@ -176,7 +176,7 @@ module.export = function(Hangar) {
 	});
 
 	//Sell-Possesion
-	Hangar.sellPossession = function(access_token,uniq_objects,uniq_skins,singleton_skins,decks) {
+	Hangar.sellPossession = async(access_token,uniq_objects,uniq_skins,singleton_skins,decks) => {
 		const Accounts = Hangar.app.models.Accounts;
 		let ret_request = {
 			"uniq_objects": uniq_objects,
@@ -555,7 +555,7 @@ module.export = function(Hangar) {
 	});
 
 	//RepairPossesion
-	Hangar.repairPossession = function(access_token,repair_data) {
+	Hangar.repairPossession = async(access_token,repair_data) => {
 		const Accounts = Hangar.app.models.Accounts;
 		var ret_request = {
 			"repair_data": repair_data,
@@ -714,7 +714,7 @@ module.export = function(Hangar) {
 	});
 
 	//EquipShip
-	Hangar.equipShip = function(access_token,is_reverse,uniq_id) {
+	Hangar.equipShip = async(access_token,is_reverse,uniq_id) => {
 		var ret_request = {
 			"is_reverse": is_reverse,
 			"uniq_id": uniq_id,
@@ -725,20 +725,20 @@ module.export = function(Hangar) {
 			const userObj = await Accounts.getUserFromToken(access_token);
 			if(is_reverse) {
 				userObj.possessionInfo.inventory.equiped_ship = "";
-				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Unequip Ship Success",ret_request));
+				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Unequip Ship Success",ret_request));
 			}
 			else {
 				userObj.possessionInfo.inventory.ships.forEach(ship_object => {
 					if (ship_object.uniq_id == uniq_id) {
 						if(userObj.player_state.position_state == 0) {
 							userObj.possessionInfo.inventory.equiped_ship = uniq_id;
-							return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Equip Ship Success",ret_request));
+							Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Equip Ship Success",ret_request));
 						}
 					}
 				});			
 			}		
 		} catch (e) {
-			return Promise.reject(e);			
+			Promise.reject(e);			
 		}
 
 	}
@@ -764,7 +764,7 @@ module.export = function(Hangar) {
 	});
 
 	//Equip MiscAndGuns
-	Hangar.equipMiscAndGuns = function(access_token,is_reverse,miscs_uniq_id,guns_uniq_id,ship_uniq_id) {
+	Hangar.equipMiscAndGuns = async(access_token,is_reverse,miscs_uniq_id,guns_uniq_id,ship_uniq_id) => {
 		const Accounts = Hangar.app.models.Accounts;
 		var ret_request = {
 			"is_reverse": is_reverse,
@@ -775,9 +775,8 @@ module.export = function(Hangar) {
 		};
 		try {
 			const userObj = await Accounts.getUserFromToken(access_token);
-			let current_ship;
 			if(!is_reverse) {
-				let have_gun,have_misc = false;
+				let have_gun,have_misc = true;
 				//Check client have all object
 				guns_uniq_id.forEach(gun_uniq_id => {
 					have_gun = false;
@@ -794,68 +793,123 @@ module.export = function(Hangar) {
 						});
 					});
 				});
-				
-				userObj.possessionInfo.inventory.miscs.forEach(misc_object => {
-					if (misc_object.uniq_id == miscs_uniq_id) {
-						have_misc = true;
-					}
-				});
-				userObj.possessionInfo.inventory.ships.forEach(ship_object => {
-					ship_object.miscs.forEach(misc_object => {
-						if (misc_object.uniq_id == miscs_uniq_id) {
+				miscs_uniq_id.forEach(misc_uniq_id => {
+					have_misc = false;
+					userObj.possessionInfo.inventory.miscs.forEach(misc_object => {
+						if (misc_object.uniq_id == misc_uniq_id) {
 							have_misc = true;
-							equiped_misc = true;
 						}
 					});
-				});
-
-				//Equip Object
-				miscs_uniq_id.forEach(miscfindobject => {
-					userObj.possessionInfo.inventory.miscs.forEach(miscobject => {
-						if(miscobject.uniq_id == miscfindobject) {
-							userObj.possessionInfo.inventory.miscs.pop(miscobject);
-							current_ship.miscs.push(miscobject);
-						}
-					});
-					userObj.possessionInfo.inventory.ships.forEach(shipobject => {
-						shipobject.miscs.forEach(shipmiscobject => {
-							if(shipmiscobject.uniq_id == miscfindobject) {
-								shipobject.miscs.pop(shipmiscobject);
-								current_ship.miscs.push(shipmiscobject);
+					userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+						ship_object.miscs.forEach(misc_object => {
+							if (misc_object.uniq_id == misc_uniq_id) {
+								have_misc = true;
 							}
 						});
 					});
-				});
-				guns_uniq_id.forEach(gunfindobject => {
-					userObj.possessionInfo.inventory.guns.forEach(gunobject => {
-						if(gunobject.uniq_id == gunfindobject) {
-							userObj.possessionInfo.inventory.guns.pop(gunobject);
-							current_ship.guns.push(gunobject);
-						}
-					});
-					userObj.possessionInfo.inventory.ships.forEach(shipobject => {
-						shipobject.guns.forEach(shipgunobject => {
-							if(shipgunobject.uniq_id == gunfindobject) {
-								shipobject.guns.pop(shipgunobject);
-								current_ship.guns.push(shipgunobject);
+				})	
+				if (have_misc == true && have_gun == true) {
+					//Equip Object
+					miscs_uniq_id.forEach(misc_uniq_id => {
+						let i,j = 0;
+						userObj.possessionInfo.inventory.miscs.forEach(misc_object => {
+							if(misc_object.uniq_id == misc_uniq_id) {
+								delete userObj.possessionInfo.inventory.miscs[i];
+								userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+									if (ship_object.uniq_id == ship_uniq_id) {
+										userObj.possessionInfo.inventory.ships[j].miscs.push(misc_uniq_id);
+									}
+									j++;
+								});
 							}
+							i++;
+						});
+						let h,k,l = 0;
+						userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+							ship_object.miscs.forEach(equip_misc => {
+								if(equip_misc.uniq_id == misc_uniq_id) {
+									delete userObj.possessionInfo.inventory.ships[h].misc[k];
+									userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+										if (ship_object.uniq_id == ship_uniq_id) {
+											userObj.possessionInfo.inventory.ships[l].miscs.push(misc_uniq_id);
+										}
+										l++;
+									});
+								}
+								k++
+							});
+							h++;
 						});
 					});
+					guns_uniq_id.forEach(gun_uniq_id => {
+						let i,j = 0;
+						userObj.possessionInfo.inventory.guns.forEach(gun_object => {
+							if(gun_object.uniq_id == gun_uniq_id) {
+								delete userObj.possessionInfo.inventory.guns[i];
+								userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+									if (ship_object.uniq_id == ship_uniq_id) {
+										userObj.possessionInfo.inventory.ships[j].guns.push(guns_uniq_id);
+									}
+									j++;
+								});
+								current_ship.guns.push(gunobject);
+							}
+							i++;
+						});
+						let h,k,l = 0;
+						userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+							ship_object.guns.forEach(gun_object => {
+								if(gun_object.uniq_id == gun_uniq_id) {
+									delete userObj.possessionInfo.inventory.ships[h].guns[k];
+									userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+										if (ship_object.uniq_id == ship_uniq_id) {
+											userObj.possessionInfo.inventory.ships[l].guns.push(guns_uniq_id);
+										}
+										l++;
+									});
+								}
+								k++;
+							});
+							h++;
+						});
+					});
+				}
+				
+				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Equip Success",ret_request));
+			} 
+			else {
+				guns_uniq_id.forEach(gun_uniq_id => {
+					let i,j = 0;
+					userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+						if (ship_object.uniq_id == ship_uniq_id) {
+							ship_object.guns.forEach(gun_object => {
+								if (gun_object.uniq_id == gun_uniq_id) {
+									delete userObj.possessionInfo.inventory.ships[i].guns[j];
+									userObj.possessionInfo.inventory.guns.push(gun_object);
+								}
+								j++
+							});
+						}
+						i++;				
+					});
 				});
-				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Equip Success",ret_request));
-			} else {
-				current_ship.guns.forEach(gunobject => {
-					current_ship.guns.pop(gunobject);
-					userObj.possessionInfo.inventory.guns.push(gunobject);
+				miscs_uniq_id.forEach(misc_uniq_id => {
+					let i,j = 0;
+					userObj.possessionInfo.inventory.ships.forEach(ship_object => {
+						ship_object.miscs.forEach(equip_misc => {
+							if(equip_misc.uniq_id == misc_uniq_id) {
+								delete userObj.possessionInfo.inventory.ships[i].misc[j];
+								userObj.possessionInfo.inventory.miscs.push(equip_misc);
+							}
+							j++
+						});
+						i++;
+					});
 				});
-				current_ship.miscs.forEach(miscobject => {
-					current_ship.miscs.pop(miscobject);
-					userObj.possessionInfo.inventory.miscs.push(miscobject);
-				});
-				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Success",ret_request));
+				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Unequip Success",ret_request));
 			}
 		} catch (e) {
-			return Promise.reject(e);	
+			Promise.reject(e);	
 		}
 
 	}
@@ -883,7 +937,7 @@ module.export = function(Hangar) {
 	});
 
 	//EquipSkinToUniqObject
-	Hangar.equipSkinToUniqObject = function(access_token,is_reverse,uniq_object_type,skin_table_id,object_uniq_id) {
+	Hangar.equipSkinToUniqObject = async(access_token,is_reverse,uniq_object_type,skin_table_id,object_uniq_id) => {
 		const Accounts = Hangar.app.models.Accounts;
 		var ret_request = {
 			"is_reverse": is_reverse,
@@ -939,7 +993,7 @@ module.export = function(Hangar) {
 						});
 					}
 				}
-				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Success",ret_request));
+				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Success",ret_request));
 			} else {
 				if(uniq_object_type == "ship") {
 					userObj.possessionInfo.inventory.ships.forEach(shipobject => {
@@ -968,10 +1022,10 @@ module.export = function(Hangar) {
 						});
 					}
 				}
-				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Success",ret_request));
+				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Success",ret_request));
 			}
 		} catch(e) {
-			return Promise.reject(e);	
+			Promise.reject(e);	
 		}
 	}
 	Hangar.remoteMethod('equipSkinToUniqObject', {
@@ -998,15 +1052,90 @@ module.export = function(Hangar) {
 	});
 
 	//EquipSkinToSingleton
-	Hangar.equipSkinToSingleton = function() {
-
+	Hangar.equipSkinToSingleton = async(access_token,is_reverse,singleton_type,skin_table_id) => {
+		const Accounts = Hangar.app.models.Accounts;
+		var ret_request = {
+			"is_reverse": is_reverse,
+			"singleton_type":singleton_type,
+			"skin_table_id":skin_table_id,
+		};
+		try {
+			const userObj = await Accounts.getUserFromToken(access_token);
+			if (!is_reverse) {
+				if (singleton_type == "cockpit") {
+					let i = 0;
+					userObj.possessionInfo.inventory.cockpit_skins.forEach(cockpit_skin => {
+						if (cockpit_skin == skin_table_id) {
+							if (userObj.possessionInfo.inventory.equiped_cockpit_skin == -1) {
+								userObj.possessionInfo.inventory.equiped_cockpit_skin = skin_table_id;
+								delete userObj.possessionInfo.inventory.cockpit_skins[i];
+							}
+							else {
+								delete userObj.possessionInfo.inventory.cockpit_skins[i];
+								userObj.possessionInfo.inventory.cockpit_skins.push(userObj.possessionInfo.inventory.equiped_cockpit_skin);
+								userObj.possessionInfo.inventory.equiped_cockpit_skin = skin_table_id;
+							}
+						}
+						i++;
+					});
+				}
+				else {
+					let i = 0;
+					userObj.possessionInfo.inventory.map_skins.forEach(map_skin => {
+						if (map_skin == skin_table_id) {
+							if (userObj.possessionInfo.inventory.equiped_map_skin == -1) {
+								userObj.possessionInfo.inventory.equiped_map_skin = skin_table_id;
+								delete userObj.possessionInfo.inventory.map_skins[i];
+							}
+							else {
+								delete userObj.possessionInfo.inventory.map_skins[i];
+								userObj.possessionInfo.inventory.map_skins.push(userObj.possessionInfo.inventory.equiped_map_skin);
+								userObj.possessionInfo.inventory.equiped_map_skin = skin_table_id;
+							}
+						}
+						i++;
+					});
+				}
+				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Equip Skin to Singleton Success",ret_request));
+			}
+			else {
+				if (singleton_type == "cockpit") {
+					userObj.possessionInfo.inventory.cockpit_skins.push(skin_table_id);
+					userObj.possessionInfo.equiped_cockpit_skin = -1;
+				}
+				else if (singleton_type == "map") {
+					userObj.possessionInfo.inventory.map_skins.push(skin_table_id);
+					userObj.possessionInfo.equiped_map_skin = -1;
+				}
+				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Unequip Skin to Singleton Success",ret_request));
+			}
+		} catch(e) {
+			Promise.reject(e);
+		}
 	}
 	Hangar.remoteMethod('equipSkinToSingleton', {
-
+		accepts: [
+			{arg: 'access_token', type: 'string', required: true},
+			{arg: 'is_reverse', type: 'bool', required: true},
+			{arg: 'singleton_type', type: 'string', required: true},
+			{arg: 'skin_table_id', type: 'int', required: true},
+		],
+		description: [
+			'(every)',
+		],
+		returns: {
+			root: true,
+			arg: '',
+			type: 'object',
+			description: [
+				'return HangarCB',
+			]
+		},
+		http: {path: '/equip-skin-singleton', verb: 'post'}
 	});
 
 	//ReparkShip
-	Hangar.reparkShip = function(access_token,ship_uniq_id,deck_index) {
+	Hangar.reparkShip = async(access_token,ship_uniq_id,deck_index) => {
 		const Accounts = Hangar.app.models.Accounts;
 		var ret_request = {
 			"ship_uniq_id": ship_uniq_id,
