@@ -1,9 +1,6 @@
 'use strict';
 
-var Common = require('./common.js');
-
-module.export = function(Hangar) {
-
+module.exports = function(Hangar) {
 	Hangar.disableRemoteMethodByName("upsert");
 	Hangar.disableRemoteMethodByName("find");
 	Hangar.disableRemoteMethodByName("replaceOrCreate");
@@ -1220,4 +1217,4 @@ module.export = function(Hangar) {
 		},
 		http: {path: '/hangarCB', verb: 'post'}
 	});
-}
+};

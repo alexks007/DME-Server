@@ -1,6 +1,6 @@
 {
-  "name": "hangar",
-  "plural": "hangar",
+  "name": "emp",
+  "plural": "emp",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {

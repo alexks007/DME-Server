@@ -5,7 +5,7 @@
 const { resolve } = require('path');
 const util = require('util');
 const common = require('../../../common/models/common');
-const buypossession = require('../../../common/hangar/buypossession.js'); //Possession Code
+//const buypossession = require('../../../common/hangar/buypossession.js'); //Possession Code
 const config = require('../../config.json');
 const socket_pcport = config.socket_pcport;
 
@@ -45,17 +45,7 @@ module.exports = function(WebSocketInstance) {
 			console.log(clientConnectedMsg);
 
 
-			/*Possession Code */
-			socket.on('BuyPossession', function(data) {
-				var buyprice = buypossession.getPrice(data.table_objects.type,data.table_objects.table_id,data.decks);				
-				var chk_suc = buypossession.getCheck(data,data.user_id,buyprice);
-				for(var i = 0;i < Object.keys(clients).length; i++) {
-//					socket.join(Object.keys(clients)[i]);
-//					console.log(buypossession.test());
-					io.to(Object.keys(clients)[i]).emit('new_msg', chk_suc);
-				}
-			});
-			/*Possession Code Ended */
+
 			
 			socket.on('create', function(room) {
 				console.log('created room: ' + room);

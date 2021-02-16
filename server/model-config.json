@@ -162,5 +162,9 @@
   "GuildAvatar": {
     "dataSource": "disapora",
     "public": false
+  },
+  "hangar": {
+    "dataSource": "disapora",
+    "public": true
   }
 }
