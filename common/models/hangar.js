@@ -52,7 +52,7 @@ module.exports = function(Hangar) {
 						}
 					});
 				}
-				if (table_object.type == "ship") {
+				if (table_object.type == "Ship") {
 					shipJson.forEach(ships => {
 						if (table_object.table_id == ships.ID) {
 							if (ships.MoneyType == 0) {
@@ -120,7 +120,7 @@ module.exports = function(Hangar) {
 							}
 						});
 					}
-					if (table_object.type == "ship") {
+					if (table_object.type == "Ship") {
 						shipJson.forEach(ships => {
 							if (table_object.table_id == ships.ID) {
 								userObj.possessionInfo.inventory.ships.push(ships);
@@ -152,7 +152,7 @@ module.exports = function(Hangar) {
 			Promise.reject(e);
 		}
 	}
-	Hangar.remoteMethod('buyPossesion', {
+	Hangar.remoteMethod('buyPossession', {
 		accepts: [
 			{arg: 'access_token', type: 'string', required: true},
 			{arg: 'table_objects', type: 'array', required: true},
@@ -172,7 +172,7 @@ module.exports = function(Hangar) {
 		http: {path: '/buy-possesion', verb: 'post'}
 	});
 
-	//Sell-Possesion
+	//Sell-Possession
 	Hangar.sellPossession = async(access_token,uniq_objects,uniq_skins,singleton_skins,decks) => {
 		const Accounts = Hangar.app.models.Accounts;
 		let ret_request = {
@@ -192,7 +192,7 @@ module.exports = function(Hangar) {
 				uniq_objects.forEach(uniq_object => {
 					if (have_object == true) {
 						have_object = false;
-						if(uniq_object.type == "ship") {						
+						if(uniq_object.type == "Ship") {						
 							userObj.possessionInfo.inventory.ships.forEach(ship_object => {
 								if(ship_object.uniq_id == uniq_object.uniq_id) {
 									have_object = true;
@@ -237,7 +237,7 @@ module.exports = function(Hangar) {
 					//check ship skin
 					if (have_object == true) {
 						have_object = false;
-						if(uniq_skin_object.type == "ship") {						
+						if(uniq_skin_object.type == "Ship") {						
 							userObj.possessionInfo.inventory.ship_skins.forEach(ship_skin => {
 								if(ship_skin == uniq_skin_object.object_uniq_id) {
 									have_object = true;
@@ -317,7 +317,7 @@ module.exports = function(Hangar) {
 			if (have_object == true) {
 				uniq_objects.forEach(uniq_object => {
 					//Sell Ship
-					if(uniq_object.type == "ship") {
+					if(uniq_object.type == "Ship") {
 						if (userObj.possessionInfo.inventory.equiped_ship == uniq_object.uniq_id) {
 							shipJson.forEach(ship_item => {
 								if (ship_item.ID == uniq_object.uniq_id) {
@@ -404,7 +404,7 @@ module.exports = function(Hangar) {
 				});
 				uniq_skins.forEach(uniq_skin_object => {
 					//Ship Skin
-					if(uniq_skin_object.type == "ship") {	
+					if(uniq_skin_object.type == "Ship") {	
 						let i,j = 0;					
 						userObj.possessionInfo.inventory.ship_skins.forEach(ship_skin => {
 							if (ship_skin == uniq_skin_object.table_id) {
@@ -529,7 +529,7 @@ module.exports = function(Hangar) {
 			return Promise.reject(error);			
 		}
 	}
-	Hangar.remoteMethod('sellPossesion', {
+	Hangar.remoteMethod('sellPossession', {
 		accepts: [			
 			{arg: 'access_token', type: 'string', required: true},
 			{arg: 'uniq_objects', type: 'array', required: true},
@@ -563,7 +563,7 @@ module.exports = function(Hangar) {
 			const moneyDC = userObj.player_state.money_dc;
 			let costPrice = 0;
 			repair_data.forEach(repair_data_object => {
-				if (repair_data_object.uniq_object.type == "ship") {
+				if (repair_data_object.uniq_object.type == "Ship") {
 					let have_ship = false;
 					userObj.possessionInfo.inventory.ships.forEach(ship_object => {
 						if (ship_object.uniq_id == repair_data_object.uniq_object.uniq_id) {
@@ -633,7 +633,7 @@ module.exports = function(Hangar) {
 				have_all_item = true;
 			if (have_all_item == true && moneyDC >= costPrice) {
 				repair_data.forEach(repair_data_object => {
-					if (repair_data_object.uniq_object.type == "ship") {
+					if (repair_data_object.uniq_object.type == "Ship") {
 						let i = 0;
 						userObj.possessionInfo.inventory.ships.forEach(ship_object => {
 							if (ship_object.uniq_id == repair_data_object.uniq_object.uniq_id) {
@@ -690,7 +690,7 @@ module.exports = function(Hangar) {
 		}
 
 	}
-	Hangar.remoteMethod('repairPossesion', {
+	Hangar.remoteMethod('repairPossession', {
 		accepts: [
 			
 			{arg: 'access_token', type: 'string', required: true},
@@ -950,7 +950,7 @@ module.exports = function(Hangar) {
 			let current_gun;
 			let gun_current_skin;
 			if(!is_reverse) {
-				if(uniq_object_type == "ship") {
+				if(uniq_object_type == "Ship") {
 					userObj.possessionInfo.inventory.ships.forEach(shipobject => {
 						if(shipobject.uniq_id == object_uniq_id) current_ship = shipobject;
 					});
@@ -992,7 +992,7 @@ module.exports = function(Hangar) {
 				}
 				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Success",ret_request));
 			} else {
-				if(uniq_object_type == "ship") {
+				if(uniq_object_type == "Ship") {
 					userObj.possessionInfo.inventory.ships.forEach(shipobject => {
 						if(shipobject.uniq_id == object_uniq_id) {
 							if(shipobject.equiped_skin != -1) userObj.possessionInfo.inventory.ship_skins.push(shipobject.equiped_skin);
