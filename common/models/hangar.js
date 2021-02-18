@@ -149,7 +149,7 @@ module.exports = function(Hangar) {
 				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Buy Possession Success",ret_request));
 			}
 		} catch(e) {
-			Promise.reject(e);
+			return Promise.reject(e);
 		}
 	}
 	Hangar.remoteMethod('buyPossession', {
@@ -735,7 +735,7 @@ module.exports = function(Hangar) {
 				});			
 			}		
 		} catch (e) {
-			Promise.reject(e);			
+			return Promise.reject(e);			
 		}
 
 	}
@@ -906,7 +906,7 @@ module.exports = function(Hangar) {
 				return Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Unequip Success",ret_request));
 			}
 		} catch (e) {
-			Promise.reject(e);	
+			return Promise.reject(e);	
 		}
 
 	}
@@ -1022,7 +1022,7 @@ module.exports = function(Hangar) {
 				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Success",ret_request));
 			}
 		} catch(e) {
-			Promise.reject(e);	
+			return Promise.reject(e);	
 		}
 	}
 	Hangar.remoteMethod('equipSkinToUniqObject', {
@@ -1107,7 +1107,7 @@ module.exports = function(Hangar) {
 				Promise.resolve(Hangar.hangarCB(userObj.possessionInfo,userObj.player_state,1,"Unequip Skin to Singleton Success",ret_request));
 			}
 		} catch(e) {
-			Promise.reject(e);
+			return Promise.reject(e);
 		}
 	}
 	Hangar.remoteMethod('equipSkinToSingleton', {
