@@ -1,5 +1,7 @@
 'use strict';
 
+var Common = require('./common.js');
+
 module.exports = function(Hangar) {
 	Hangar.disableRemoteMethodByName("upsert");
 	Hangar.disableRemoteMethodByName("find");
@@ -22,13 +24,13 @@ module.exports = function(Hangar) {
 	const shipskinJson = require('../../storage/ShipSkinsData.json');
 	const decksJson = require('../../storage/DeckData.json');
 
-	//BuyPossesion
+	//BuyPossesions
 	Hangar.buyPossession = async(access_token, table_objects, decks) => {
 		const Accounts = Hangar.app.models.Accounts;
 		let ret_request = {
 			"table_objects": table_objects,
 			"decks": decks,
-			"request_name": "Buy Possession"
+			"request_name": "Hangar/buy-possession"
 		};
 		try {
 			const userObj = await Accounts.getUserFromToken(access_token);
@@ -169,7 +171,7 @@ module.exports = function(Hangar) {
 				'return HangarCB',
 			]
 		},
-		http: {path: '/buy-possesion', verb: 'post'}
+		http: {path: '/buy-possession', verb: 'post'}
 	});
 
 	//Sell-Possession
@@ -180,7 +182,7 @@ module.exports = function(Hangar) {
 			"uniq_skins": uniq_skins,
 			"singleton_skins":singleton_skins,
 			"decks":decks,
-			"request_name": "Sell Possession"
+			"request_name": "Hangar/sell-possession"
 		};
 		try {
 			//Check Objects that Client Wants To Sell
@@ -548,7 +550,7 @@ module.exports = function(Hangar) {
 				'return HangarCB',
 			]
 		},
-		http: {path: '/sell-possesion', verb: 'post'}
+		http: {path: '/sell-possession', verb: 'post'}
 	});
 
 	//RepairPossesion
@@ -556,7 +558,7 @@ module.exports = function(Hangar) {
 		const Accounts = Hangar.app.models.Accounts;
 		var ret_request = {
 			"repair_data": repair_data,
-			"request_name": "Repair Possession"
+			"request_name": "Hangar/repair-possession"
 		};
 		try {
 			const userObj = await Accounts.getUserFromToken(access_token);
@@ -707,7 +709,7 @@ module.exports = function(Hangar) {
 				'return HangarCB',
 			]
 		},
-		http: {path: '/repair-possesion', verb: 'post'}
+		http: {path: '/repair-possession', verb: 'post'}
 	});
 
 	//EquipShip
@@ -715,7 +717,7 @@ module.exports = function(Hangar) {
 		var ret_request = {
 			"is_reverse": is_reverse,
 			"uniq_id": uniq_id,
-			"request_name": "Equip Ship"
+			"request_name": "Hangar/equip-ship"
 		};
 		const Accounts = Hangar.app.models.Accounts;
 		try {
@@ -768,7 +770,7 @@ module.exports = function(Hangar) {
 			"miscs_uniq_id":miscs_uniq_id,
 			"guns_uniq_id":guns_uniq_id,
 			"ship_uniq_id": ship_uniq_id,
-			"request_name": "Equip Misc And Guns"
+			"request_name": "Hangar/equip-misc-gun"
 		};
 		try {
 			const userObj = await Accounts.getUserFromToken(access_token);
@@ -941,7 +943,7 @@ module.exports = function(Hangar) {
 			"uniq_object_type":uniq_object_type,
 			"skin_table_id":skin_table_id,
 			"object_uniq_id": object_uniq_id,
-			"request_name": "Equip Skin To Uniq Object"
+			"request_name": "Hangar/equip-skin-uniqobject"
 		};
 		try {
 			const userObj = await Accounts.getUserFromToken(access_token);
@@ -1053,8 +1055,9 @@ module.exports = function(Hangar) {
 		const Accounts = Hangar.app.models.Accounts;
 		var ret_request = {
 			"is_reverse": is_reverse,
-			"singleton_type":singleton_type,
-			"skin_table_id":skin_table_id,
+			"singleton_type": singleton_type,
+			"skin_table_id": skin_table_id,
+			'request_name': 'Hangar/equip-skin-singleton'
 		};
 		try {
 			const userObj = await Accounts.getUserFromToken(access_token);
@@ -1137,7 +1140,7 @@ module.exports = function(Hangar) {
 		var ret_request = {
 			"ship_uniq_id": ship_uniq_id,
 			"deck_index":deck_index,
-			"request_name": "Repark Ship"
+			"request_name": "Hangar/repark-ship"
 		};
 		try {
 			const userObj = await Accounts.getUserFromToken(access_token);
@@ -1187,34 +1190,41 @@ module.exports = function(Hangar) {
 
 	//HangarCB
 	Hangar.hangarCB = (possessions,current_state,success,error_message,hangar_request) => {
-		var ret_request = {
+		let ret_request = {
 			"possessions": possessions,
 			"current_state": current_state,
 			"success": success,
 			"error_message": error_message,
 			"hangar_request": hangar_request
-		}
-		return ret_request;
+		};
+		let request_url = ret_request.hangar_request.request_name;
+		let bsuccess;
+		if (success == 1)
+			bsuccess = true;
+		else
+			bsuccess = false;
+
+		return Promise.resolve(Common.makeReturnValue(bsuccess, request_url, error_message,ret_request));
 	}
-	Hangar.remoteMethod('hangarCB', {
-		accepts: [
-			{arg: 'possessions', type: 'object', required: true},
-			{arg: 'current_state', type: 'object', required: true},
-			{arg: 'success', type: 'bool', required: true},
-			{arg: 'error_message', type: 'string', required: true},
-			{arg: 'hangar_request', type: 'object', required: true},
-		],
-		description: [
-			'(every)',
-		],
-		returns: {
-			root: true,
-			arg: '',
-			type: 'object',
-			description: [
-				'return HangarCB',
-			]
-		},
-		http: {path: '/hangarCB', verb: 'post'}
-	});
+	// Hangar.remoteMethod('hangarCB', {
+	// 	accepts: [
+	// 		{arg: 'possessions', type: 'object', required: true},
+	// 		{arg: 'current_state', type: 'object', required: true},
+	// 		{arg: 'success', type: 'bool', required: true},
+	// 		{arg: 'error_message', type: 'string', required: true},
+	// 		{arg: 'hangar_request', type: 'object', required: true},
+	// 	],
+	// 	description: [
+	// 		'(every)',
+	// 	],
+	// 	returns: {
+	// 		root: true,
+	// 		arg: '',
+	// 		type: 'object',
+	// 		description: [
+	// 			'return HangarCB',
+	// 		]
+	// 	},
+	// 	http: {path: '/hangarCB', verb: 'post'}
+	// });
 };
