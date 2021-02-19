@@ -163,7 +163,7 @@
     "dataSource": "disapora",
     "public": false
   },
-  "hangar": {
+  "Hangar": {
     "dataSource": "disapora",
     "public": true
   }

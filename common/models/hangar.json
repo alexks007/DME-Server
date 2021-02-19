@@ -1,6 +1,6 @@
 {
-  "name": "hangar",
-  "plural": "hangar",
+  "name": "Hangar",
+  "plural": "Hangar",
   "base": "PersistedModel",
   "idInjection": true,
   "options": {
