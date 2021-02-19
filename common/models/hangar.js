@@ -745,7 +745,7 @@ module.exports = function(Hangar) {
 		accepts: [
 			
 			{arg: 'access_token', type: 'string', required: true},
-			{arg: 'is_reverse', type: 'bool', required: true},
+			{arg: 'is_reverse', type: 'boolean', required: true},
 			{arg: 'uniq_id', type: 'string', required: true},
 		],
 		description: [
@@ -916,7 +916,7 @@ module.exports = function(Hangar) {
 		accepts: [
 			
 			{arg: 'access_token', type: 'string', required: true},
-			{arg: 'is_reverse', type: 'bool', required: true},
+			{arg: 'is_reverse', type: 'boolean', required: true},
 			{arg: 'miscs_uniq_id', type: 'array', required: true},
 			{arg: 'guns_uniq_id', type: 'array', required: true},
 			{arg: 'ship_uniq_id', type: 'string', required: true},
@@ -1030,9 +1030,9 @@ module.exports = function(Hangar) {
 	Hangar.remoteMethod('equipSkinToUniqObject', {
 		accepts: [
 			{arg: 'access_token', type: 'string', required: true},
-			{arg: 'is_reverse', type: 'bool', required: true},
+			{arg: 'is_reverse', type: 'boolean', required: true},
 			{arg: 'uniq_object_type', type: 'string', required: true},
-			{arg: 'skin_table_id', type: 'int', required: true},
+			{arg: 'skin_table_id', type: 'number', required: true},
 			{arg: 'object_uniq_id', type: 'string', required: true},
 		],
 		description: [
@@ -1116,9 +1116,9 @@ module.exports = function(Hangar) {
 	Hangar.remoteMethod('equipSkinToSingleton', {
 		accepts: [
 			{arg: 'access_token', type: 'string', required: true},
-			{arg: 'is_reverse', type: 'bool', required: true},
+			{arg: 'is_reverse', type: 'boolean', required: true},
 			{arg: 'singleton_type', type: 'string', required: true},
-			{arg: 'skin_table_id', type: 'int', required: true},
+			{arg: 'skin_table_id', type: 'number', required: true},
 		],
 		description: [
 			'(every)',
@@ -1172,7 +1172,7 @@ module.exports = function(Hangar) {
 		accepts: [
 			{arg: 'access_token', type: 'string', required: true},
 			{arg: 'ship_uniq_id', type: 'string', required: true},
-			{arg: 'deck_index', type: 'bool', required: true}
+			{arg: 'deck_index', type: 'boolean', required: true}
 		],
 		description: [
 			'(every)',
